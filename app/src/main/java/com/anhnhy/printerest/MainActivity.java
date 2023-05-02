@@ -1,27 +1,34 @@
 package com.anhnhy.printerest;
 
-import androidx.annotation.NonNull;
 import androidx.appcompat.app.ActionBarDrawerToggle;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 import androidx.core.view.GravityCompat;
 import androidx.drawerlayout.widget.DrawerLayout;
-import androidx.fragment.app.FragmentStatePagerAdapter;
-import androidx.viewpager.widget.ViewPager;
+import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentTransaction;
 
 import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 
-import com.anhnhy.printerest.adapter.ViewPagerAdapter;
-import com.google.android.material.bottomnavigation.BottomNavigationView;
+import com.anhnhy.printerest.fragment.AccountFragment;
+import com.anhnhy.printerest.fragment.AlbumFragment;
+import com.anhnhy.printerest.fragment.HomeFragment;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.android.material.navigation.NavigationView;
 import com.google.android.material.snackbar.Snackbar;
 
 public class MainActivity extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener {
+
+    private static final int FRAGMENT_HOME = 1;
+    private static final int FRAGMENT_ALBUM = 2;
+    private static final int FRAGMENT_ACCOUNT= 3;
+    private static final int FRAGMENT_SIGN_OUT = 4;
+
+    private int currentFragment = FRAGMENT_HOME;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -30,14 +37,14 @@ public class MainActivity extends AppCompatActivity
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
-        FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
-        fab.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG)
-                        .setAction("Action", null).show();
-            }
-        });
+//        FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
+//        fab.setOnClickListener(new View.OnClickListener() {
+//            @Override
+//            public void onClick(View view) {
+//                Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG)
+//                        .setAction("Action", null).show();
+//            }
+//        });
 
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
         ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(
@@ -47,6 +54,10 @@ public class MainActivity extends AppCompatActivity
 
         NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
         navigationView.setNavigationItemSelectedListener(this);
+
+        replaceFragment(new HomeFragment());
+        navigationView.setCheckedItem(R.id.nav_home);
+        setTitleToolBar();
     }
 
     @Override
@@ -88,15 +99,51 @@ public class MainActivity extends AppCompatActivity
         int id = item.getItemId();
 
         if (id == R.id.nav_home) {
-            // Handle the camera action
+            if (FRAGMENT_HOME != currentFragment) {
+                replaceFragment(new HomeFragment());
+                currentFragment = FRAGMENT_HOME;
+            }
         } else if (id == R.id.nav_album) {
-
+            if (FRAGMENT_ALBUM != currentFragment) {
+                replaceFragment(new AlbumFragment());
+                currentFragment = FRAGMENT_ALBUM;
+            }
         } else if (id == R.id.nav_account) {
-
-        } else if (id == R.id.nav_sign_out) {
+            if (FRAGMENT_ACCOUNT != currentFragment) {
+                replaceFragment(new AccountFragment());
+                currentFragment = FRAGMENT_ACCOUNT;
+            }
         }
+
+        setTitleToolBar();
+
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
         drawer.closeDrawer(GravityCompat.START);
         return true;
+    }
+
+    private void replaceFragment(Fragment fragment) {
+        FragmentTransaction fragmentTransaction = getSupportFragmentManager().beginTransaction();
+        fragmentTransaction.replace(R.id.content_frame, fragment);
+        fragmentTransaction.commit();
+    }
+
+    private void setTitleToolBar() {
+        String title = "";
+        switch (currentFragment) {
+            case FRAGMENT_HOME:
+                title = getString(R.string.title_home);
+                break;
+            case FRAGMENT_ALBUM:
+                title = getString(R.string.title_album);
+                break;
+            case FRAGMENT_ACCOUNT:
+                title = getString(R.string.title_account);
+                break;
+        }
+
+        if (getSupportActionBar() != null) {
+            getSupportActionBar().setTitle(title );
+        }
     }
 }

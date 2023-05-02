@@ -5,19 +5,15 @@
         <item
             android:id="@+id/nav_home"
             android:icon="@drawable/ic_home"
-            android:title="Home" />
+            android:title="@string/title_home" />
         <item
             android:id="@+id/nav_album"
             android:icon="@drawable/ic_album"
-            android:title="Album" />
+            android:title="@string/title_album" />
         <item
             android:id="@+id/nav_account"
             android:icon="@drawable/ic_account"
-            android:title="Account" />
-        <item
-            android:id="@+id/nav_sign_out"
-            android:icon="@drawable/ic_sign_out"
-            android:title="Sign out" />
+            android:title="@string/title_account" />
     </group>
 
 </menu>

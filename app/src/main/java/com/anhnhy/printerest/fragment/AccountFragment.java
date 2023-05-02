@@ -11,12 +11,12 @@ import androidx.fragment.app.Fragment;
 
 import com.anhnhy.printerest.R;
 
-public class SearchFragment extends Fragment {
+public class AccountFragment extends Fragment {
+    public AccountFragment() {}
 
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-        View view = inflater.inflate(R.layout.fragment_search, container, false);
-        return view;
+        return inflater.inflate(R.layout.fragment_account, container, false);
     }
 }
