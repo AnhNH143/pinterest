@@ -1,4 +1,4 @@
-package com.anhnhy.printerest.fragment;
+package com.anhnhy.printerest.fragment.tab_home;
 
 import android.os.Bundle;
 import android.view.LayoutInflater;
@@ -11,12 +11,13 @@ import androidx.fragment.app.Fragment;
 
 import com.anhnhy.printerest.R;
 
-public class SearchFragment extends Fragment {
+public class ExploreFragment extends Fragment {
+    public ExploreFragment() {
+    }
 
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-        View view = inflater.inflate(R.layout.fragment_search, container, false);
-        return view;
+        return inflater.inflate(R.layout.fragment_explore, container, false);
     }
 }

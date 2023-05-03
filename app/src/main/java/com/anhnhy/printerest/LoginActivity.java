@@ -1,5 +1,6 @@
 package com.anhnhy.printerest;
 
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.content.Intent;
@@ -10,32 +11,52 @@ import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.anhnhy.printerest.db.Database;
-import com.anhnhy.printerest.model.User;
+import com.anhnhy.printerest.helper.CheckValidate;
+import com.google.android.gms.tasks.OnFailureListener;
+import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.firebase.auth.AuthResult;
+import com.google.firebase.auth.FirebaseAuth;
 
 public class LoginActivity extends AppCompatActivity {
 
     EditText txt_email, txt_password;
     TextView txt_forget_password;
     Button btn_login, btn_register;
+    FirebaseAuth mFirebaseAuth;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_login);
         initView();
-        Database database = new Database(this);
+        mFirebaseAuth = FirebaseAuth.getInstance();
+
         btn_login.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                String email = txt_email.getText().toString();
+                String email = txt_email.getText().toString().trim().toLowerCase();
                 String password = txt_password.getText().toString();
-                User userLogin = database.getUserByEmail(email.toLowerCase());
-                if (userLogin == null || !userLogin.getPassword().equals(password)) {
-                    Toast.makeText(LoginActivity.this, "Nhập lại email/password", Toast.LENGTH_SHORT).show();
+                if (CheckValidate.isNone(email) || CheckValidate.isNone(password)) {
+                    Toast.makeText(LoginActivity.this,
+                            "Nhập lại email/password", Toast.LENGTH_SHORT).show();
                 } else {
-                    Intent intent = new Intent(LoginActivity.this, MainActivity.class);
-                    startActivity(intent);
+                    mFirebaseAuth.signInWithEmailAndPassword(
+                                    email, password).
+                            addOnSuccessListener(new OnSuccessListener<AuthResult>() {
+                                @Override
+                                public void onSuccess(AuthResult authResult) {
+                                    Toast.makeText(LoginActivity.this, "Đăng nhập thành công", Toast.LENGTH_LONG).show();
+                                    Intent intent = new Intent(LoginActivity.this,
+                                            MainActivity.class);
+                                    startActivity(intent);
+                                }
+                            }).addOnFailureListener(new OnFailureListener() {
+                                @Override
+                                public void onFailure(@NonNull Exception e) {
+                                    Toast.makeText(LoginActivity.this,
+                                            "Nhập lại email/password", Toast.LENGTH_SHORT).show();
+                                }
+                            });
                 }
             }
         });

@@ -1,36 +1,24 @@
 package com.anhnhy.printerest.model;
 
+import com.google.firebase.database.Exclude;
+
 import java.io.Serializable;
 import java.util.List;
 
 public class User implements Serializable {
-    private int id;
     private String name;
     private String email;
-    private String password;
+    private String mKey;
 
+    private List<String> imageIds;
+
+    private List<String> likeIds;
     public User() {
     }
 
-    public User(int id, String name, String email, String password) {
-        this.id = id;
+    public User(String name, String email) {
         this.name = name;
         this.email = email;
-        this.password = password;
-    }
-
-    public User(String name, String email, String password) {
-        this.name = name;
-        this.email = email;
-        this.password = password;
-    }
-
-    public int getId() {
-        return id;
-    }
-
-    public void setId(int id) {
-        this.id = id;
     }
 
     public String getName() {
@@ -49,11 +37,37 @@ public class User implements Serializable {
         this.email = email;
     }
 
-    public String getPassword() {
-        return password;
+    @Exclude
+    public String getKey() {
+        return mKey;
     }
 
-    public void setPassword(String password) {
-        this.password = password;
+    @Exclude
+    public void setKey(String key) {
+        mKey = key;
+    }
+
+    public String getmKey() {
+        return mKey;
+    }
+
+    public void setmKey(String mKey) {
+        this.mKey = mKey;
+    }
+
+    public List<String> getImageIds() {
+        return imageIds;
+    }
+
+    public void setImageIds(List<String> imageIds) {
+        this.imageIds = imageIds;
+    }
+
+    public List<String> getLikeIds() {
+        return likeIds;
+    }
+
+    public void setLikeIds(List<String> likeIds) {
+        this.likeIds = likeIds;
     }
 }
