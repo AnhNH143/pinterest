@@ -37,7 +37,6 @@ import androidx.fragment.app.Fragment;
 import com.anhnhy.printerest.R;
 
 public class AddFragment extends Fragment {
-
     private static final int PICK_IMAGE_REQUEST = 1;
     private Button mButtonChooseImage;
     private Button mButtonUpload;
@@ -49,11 +48,10 @@ public class AddFragment extends Fragment {
 
     private StorageReference mStorageRef;
     private DatabaseReference mDatabaseRef;
-
     private StorageTask mUploadTask;
 
-
-    public AddFragment() {}
+    public AddFragment() {
+    }
 
     @Nullable
     @Override
@@ -98,7 +96,6 @@ public class AddFragment extends Fragment {
                 openImagesActivity();
             }
         });
-
     }
 
     private void openImagesActivity() {
@@ -120,7 +117,6 @@ public class AddFragment extends Fragment {
         if (requestCode == PICK_IMAGE_REQUEST && resultCode == Activity.RESULT_OK
                 && data != null && data.getData() != null) {
             mImageUri = data.getData();
-
             Picasso.with(getContext()).load(mImageUri).into(mImageView);
         }
     }
@@ -149,6 +145,7 @@ public class AddFragment extends Fragment {
                             }, 500);
 
                             Toast.makeText(getActivity(), "Upload successful", Toast.LENGTH_LONG).show();
+
                             fileReference.getDownloadUrl().addOnSuccessListener(new OnSuccessListener<Uri>() {
                                 @Override
                                 public void onSuccess(Uri uri) {

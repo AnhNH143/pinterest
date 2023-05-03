@@ -12,7 +12,8 @@ import androidx.fragment.app.Fragment;
 import com.anhnhy.printerest.R;
 
 public class ExploreFragment extends Fragment {
-    public ExploreFragment() {}
+    public ExploreFragment() {
+    }
 
     @Nullable
     @Override

@@ -41,22 +41,18 @@ public class ImagesActivity extends AppCompatActivity implements ImageAdapter.On
         mRecyclerView = findViewById(R.id.recycler_view);
         mRecyclerView.setHasFixedSize(true);
         mRecyclerView.setLayoutManager(new LinearLayoutManager(this));
-
         mProgressCircle = findViewById(R.id.progress_circle);
 
         mUploads = new ArrayList<>();
-
         mAdapter = new ImageAdapter(ImagesActivity.this, mUploads);
 
         mRecyclerView.setAdapter(mAdapter);
-
         mAdapter.setOnItemClickListener(ImagesActivity.this);
 
         mStorage = FirebaseStorage.getInstance();
         mDatabaseRef = FirebaseDatabase.getInstance().getReference("uploads");
 
         mDBListener = mDatabaseRef.addValueEventListener(new ValueEventListener() {
-
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
                 mUploads.clear();
@@ -65,9 +61,7 @@ public class ImagesActivity extends AppCompatActivity implements ImageAdapter.On
                     upload.setKey(postSnapshot.getKey());
                     mUploads.add(upload);
                 }
-
                 mAdapter.notifyDataSetChanged();
-
                 mProgressCircle.setVisibility(View.INVISIBLE);
             }
 

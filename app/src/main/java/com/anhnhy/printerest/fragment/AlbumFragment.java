@@ -12,7 +12,8 @@ import androidx.fragment.app.Fragment;
 import com.anhnhy.printerest.R;
 
 public class AlbumFragment extends Fragment {
-    public AlbumFragment() {}
+    public AlbumFragment() {
+    }
 
     @Nullable
     @Override

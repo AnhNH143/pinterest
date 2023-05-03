@@ -1,6 +1,6 @@
 package com.anhnhy.printerest;
 
-import androidx.annotation.Nullable;
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.ActionBarDrawerToggle;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
@@ -9,27 +9,32 @@ import androidx.drawerlayout.widget.DrawerLayout;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentTransaction;
 
-import android.content.Intent;
 import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
-import android.view.View;
+import android.widget.TextView;
 
 import com.anhnhy.printerest.fragment.AccountFragment;
 import com.anhnhy.printerest.fragment.AlbumFragment;
 import com.anhnhy.printerest.fragment.HomeFragment;
-import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.android.material.navigation.NavigationView;
-import com.google.android.material.snackbar.Snackbar;
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
+
 
 public class MainActivity extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener {
+    private TextView u_name;
+    private TextView u_email;
 
     private static final int FRAGMENT_HOME = 1;
     private static final int FRAGMENT_ALBUM = 2;
-    private static final int FRAGMENT_ACCOUNT= 3;
-    private static final int FRAGMENT_SIGN_OUT = 4;
-
+    private static final int FRAGMENT_ACCOUNT = 3;
+    private DatabaseReference mDatabaseRef;
     private int currentFragment = FRAGMENT_HOME;
 
     @Override
@@ -39,14 +44,10 @@ public class MainActivity extends AppCompatActivity
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
-//        FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
-//        fab.setOnClickListener(new View.OnClickListener() {
-//            @Override
-//            public void onClick(View view) {
-//                Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG)
-//                        .setAction("Action", null).show();
-//            }
-//        });
+        mDatabaseRef = FirebaseDatabase.getInstance().getReference().
+                child("users").child(FirebaseAuth.getInstance().getCurrentUser().getUid());
+
+        displayData();
 
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
         ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(
@@ -60,6 +61,27 @@ public class MainActivity extends AppCompatActivity
         replaceFragment(new HomeFragment());
         navigationView.setCheckedItem(R.id.nav_home);
         setTitleToolBar();
+    }
+
+    private void displayData() {
+        mDatabaseRef.addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot snapshot) {
+                if (snapshot.exists()) {
+                    u_name = findViewById(R.id.u_name);
+                    u_email = findViewById(R.id.u_email);
+                    String name = snapshot.child("name").getValue().toString();
+                    String email = snapshot.child("email").getValue().toString();
+                    u_name.setText(name);
+                    u_email.setText(email);
+                }
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError error) {
+
+            }
+        });
     }
 
     @Override
@@ -145,7 +167,7 @@ public class MainActivity extends AppCompatActivity
         }
 
         if (getSupportActionBar() != null) {
-            getSupportActionBar().setTitle(title );
+            getSupportActionBar().setTitle(title);
         }
     }
 }

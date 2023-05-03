@@ -17,7 +17,6 @@ import com.anhnhy.printerest.fragment.tab_home.ViewPagerAdapter;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 
 public class HomeFragment extends Fragment {
-
     private ViewPager viewPager;
     private BottomNavigationView bottomNavigationView;
     private View view;
@@ -29,7 +28,6 @@ public class HomeFragment extends Fragment {
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         view = inflater.inflate(R.layout.fragment_home, container, false);
-
         initUI();
         return view;
     }

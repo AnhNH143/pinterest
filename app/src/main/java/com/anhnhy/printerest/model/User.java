@@ -1,36 +1,21 @@
 package com.anhnhy.printerest.model;
 
+import com.google.firebase.database.Exclude;
+
 import java.io.Serializable;
 import java.util.List;
 
 public class User implements Serializable {
-    private int id;
     private String name;
     private String email;
-    private String password;
+    private String mKey;
 
     public User() {
     }
 
-    public User(int id, String name, String email, String password) {
-        this.id = id;
+    public User(String name, String email) {
         this.name = name;
         this.email = email;
-        this.password = password;
-    }
-
-    public User(String name, String email, String password) {
-        this.name = name;
-        this.email = email;
-        this.password = password;
-    }
-
-    public int getId() {
-        return id;
-    }
-
-    public void setId(int id) {
-        this.id = id;
     }
 
     public String getName() {
@@ -49,11 +34,13 @@ public class User implements Serializable {
         this.email = email;
     }
 
-    public String getPassword() {
-        return password;
+    @Exclude
+    public String getKey() {
+        return mKey;
     }
 
-    public void setPassword(String password) {
-        this.password = password;
+    @Exclude
+    public void setKey(String key) {
+        mKey = key;
     }
 }

@@ -12,7 +12,8 @@ import androidx.fragment.app.Fragment;
 import com.anhnhy.printerest.R;
 
 public class SearchFragment extends Fragment {
-    public SearchFragment() {}
+    public SearchFragment() {
+    }
 
     @Nullable
     @Override
