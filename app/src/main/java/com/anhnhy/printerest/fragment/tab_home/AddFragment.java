@@ -18,9 +18,10 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.anhnhy.printerest.ImagesActivity;
-import com.anhnhy.printerest.model.Upload;
+import com.anhnhy.printerest.model.Image;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.storage.FirebaseStorage;
@@ -45,10 +46,10 @@ public class AddFragment extends Fragment {
     private ImageView mImageView;
     private ProgressBar mProgressBar;
     private Uri mImageUri;
-
     private StorageReference mStorageRef;
     private DatabaseReference mDatabaseRef;
     private StorageTask mUploadTask;
+    private String UID = FirebaseAuth.getInstance().getCurrentUser().getUid();
 
     public AddFragment() {
     }
@@ -69,8 +70,8 @@ public class AddFragment extends Fragment {
         mImageView = view.findViewById(R.id.image_view);
         mProgressBar = view.findViewById(R.id.progress_bar);
 
-        mStorageRef = FirebaseStorage.getInstance().getReference("uploads");
-        mDatabaseRef = FirebaseDatabase.getInstance().getReference("uploads");
+        mStorageRef = FirebaseStorage.getInstance().getReference("images");
+        mDatabaseRef = FirebaseDatabase.getInstance().getReference("images");
 
         mButtonChooseImage.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -149,8 +150,8 @@ public class AddFragment extends Fragment {
                             fileReference.getDownloadUrl().addOnSuccessListener(new OnSuccessListener<Uri>() {
                                 @Override
                                 public void onSuccess(Uri uri) {
-                                    Upload upload = new Upload(mEditTextFileName.getText().toString().trim(),
-                                            uri.toString());
+                                    Image upload = new Image(mEditTextFileName.getText().toString().trim(),
+                                            uri.toString(), UID);
                                     String uploadId = mDatabaseRef.push().getKey();
                                     mDatabaseRef.child(uploadId).setValue(upload);
                                 }

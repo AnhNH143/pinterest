@@ -2,20 +2,24 @@ package com.anhnhy.printerest.model;
 
 import com.google.firebase.database.Exclude;
 
-public class Upload {
+import java.util.List;
+
+public class Image {
     private String name;
     private String imageUrl;
     private String mKey;
-
-    public Upload() {
+    private String senderId;
+    private List<String> likeIds;
+    public Image() {
     }
 
-    public Upload(String name, String imageUrl) {
+    public Image(String name, String imageUrl, String senderId) {
         if (name.trim().equals("")) {
             name = "no name";
         }
         this.name = name;
         this.imageUrl = imageUrl;
+        this.senderId = senderId;
     }
 
     public String getName() {
@@ -32,6 +36,22 @@ public class Upload {
 
     public void setImageUrl(String imageUrl) {
         this.imageUrl = imageUrl;
+    }
+
+    public String getSenderId() {
+        return senderId;
+    }
+
+    public void setSenderId(String senderId) {
+        this.senderId = senderId;
+    }
+
+    public List<String> getLikeIds() {
+        return likeIds;
+    }
+
+    public void setLikeIds(List<String> likeIds) {
+        this.likeIds = likeIds;
     }
 
     @Exclude

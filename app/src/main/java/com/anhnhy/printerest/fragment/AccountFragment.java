@@ -15,8 +15,12 @@ import androidx.annotation.Nullable;
 import androidx.appcompat.app.AlertDialog;
 import androidx.fragment.app.Fragment;
 
+import com.anhnhy.printerest.ForgetPasswordActivity;
 import com.anhnhy.printerest.LoginActivity;
 import com.anhnhy.printerest.R;
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.OnFailureListener;
+import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
@@ -29,6 +33,7 @@ public class AccountFragment extends Fragment {
     private TextView u_email;
     private Button btn_sign_out, btn_change_password;
     private DatabaseReference mDatabaseRef;
+    FirebaseAuth mFirebaseAuth;
 
     public AccountFragment() {
     }
@@ -46,6 +51,7 @@ public class AccountFragment extends Fragment {
         u_email = view.findViewById(R.id.u_email);
         btn_sign_out = view.findViewById(R.id.btn_sign_out);
         btn_change_password = view.findViewById(R.id.btn_change_password);
+        mFirebaseAuth =  FirebaseAuth.getInstance();
         mDatabaseRef = FirebaseDatabase.getInstance().getReference().
                 child("users").child(FirebaseAuth.getInstance().getCurrentUser().getUid());
         displayData();
@@ -54,6 +60,21 @@ public class AccountFragment extends Fragment {
             @Override
             public void onClick(View v) {
                 Toast.makeText(getActivity(), "Kiểm tra email để cập nhập mật khẩu", Toast.LENGTH_LONG).show();
+                mFirebaseAuth.sendPasswordResetEmail(mFirebaseAuth.getCurrentUser().getEmail()).addOnCompleteListener(new OnCompleteListener<Void>() {
+                    @Override
+                    public void onComplete(@NonNull Task<Void> task) {
+                        if (task.isSuccessful()) {
+                            Toast.makeText(getActivity(), "Kiểm tra email để cập nhập lại mật khẩu.", Toast.LENGTH_LONG).show();
+                        } else {
+
+                        }
+                    }
+                }).addOnFailureListener(new OnFailureListener() {
+                    @Override
+                    public void onFailure(@NonNull Exception e) {
+
+                    }
+                });
             }
         });
 

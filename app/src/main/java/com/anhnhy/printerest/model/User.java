@@ -10,6 +10,9 @@ public class User implements Serializable {
     private String email;
     private String mKey;
 
+    private List<String> imageIds;
+
+    private List<String> likeIds;
     public User() {
     }
 
@@ -42,5 +45,29 @@ public class User implements Serializable {
     @Exclude
     public void setKey(String key) {
         mKey = key;
+    }
+
+    public String getmKey() {
+        return mKey;
+    }
+
+    public void setmKey(String mKey) {
+        this.mKey = mKey;
+    }
+
+    public List<String> getImageIds() {
+        return imageIds;
+    }
+
+    public void setImageIds(List<String> imageIds) {
+        this.imageIds = imageIds;
+    }
+
+    public List<String> getLikeIds() {
+        return likeIds;
+    }
+
+    public void setLikeIds(List<String> likeIds) {
+        this.likeIds = likeIds;
     }
 }

@@ -13,20 +13,20 @@ import android.widget.TextView;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.anhnhy.printerest.R;
-import com.anhnhy.printerest.model.Upload;
+import com.anhnhy.printerest.model.Image;
 import com.squareup.picasso.Picasso;
 
 import java.util.List;
 
 public class ImageAdapter extends RecyclerView.Adapter<ImageAdapter.ImageViewHolder> {
     private Context mContext;
-    private List<Upload> mUploads;
+    private List<Image> mImages;
 
     private OnItemClickListener mListener;
 
-    public ImageAdapter(Context context, List<Upload> uploads) {
+    public ImageAdapter(Context context, List<Image> uploads) {
         mContext = context;
-        mUploads = uploads;
+        mImages = uploads;
     }
 
     @Override
@@ -37,7 +37,7 @@ public class ImageAdapter extends RecyclerView.Adapter<ImageAdapter.ImageViewHol
 
     @Override
     public void onBindViewHolder(ImageViewHolder holder, int position) {
-        Upload uploadCurrent = mUploads.get(position);
+        Image uploadCurrent = mImages.get(position);
         holder.textViewName.setText(uploadCurrent.getName());
         Picasso.with(mContext)
                 .load(uploadCurrent.getImageUrl())
@@ -48,7 +48,7 @@ public class ImageAdapter extends RecyclerView.Adapter<ImageAdapter.ImageViewHol
 
     @Override
     public int getItemCount() {
-        return mUploads.size();
+        return mImages.size();
     }
 
     public class ImageViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener,

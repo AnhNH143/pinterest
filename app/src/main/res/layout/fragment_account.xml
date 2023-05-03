@@ -10,7 +10,7 @@
         android:layout_height="200dp"
         android:layout_centerHorizontal="true"
         android:layout_marginTop="60dp"
-        android:src="@drawable/logo_black" />
+        android:src="@drawable/logo" />
 
     <TextView
         android:id="@+id/u_name"
@@ -20,7 +20,7 @@
         android:fontFamily="monospace"
         android:gravity="center"
         android:text="AnhNHy"
-        android:textColor="@color/black"
+        android:textColor="@color/red"
         android:textSize="30dp"
         android:textStyle="bold" />
 
@@ -32,7 +32,7 @@
         android:fontFamily="monospace"
         android:gravity="center"
         android:text="nguyenhoanganh110301@gmail.com"
-        android:textColor="@color/black"
+        android:textColor="@color/red"
         android:textSize="15dp"
         android:textStyle="bold" />
 
@@ -43,10 +43,11 @@
         android:layout_marginLeft="80dp"
         android:layout_marginTop="410dp"
         android:layout_marginRight="80dp"
-        android:background="@drawable/edittext_background"
+        android:background="@drawable/button_background_red_stroke"
+        android:backgroundTint="@color/red"
         android:fontFamily="monospace"
         android:text="Đổi mật khẩu"
-        android:textColor="@color/black"
+        android:textColor="@color/white"
         android:textSize="15dp"
         android:textStyle="bold" />
 
@@ -58,10 +59,11 @@
         android:layout_marginLeft="80dp"
         android:layout_marginTop="490dp"
         android:layout_marginRight="80dp"
-        android:background="@drawable/edittext_background"
+        android:background="@drawable/button_background_red_stroke"
+        android:backgroundTint="@color/red"
         android:fontFamily="monospace"
         android:text="Sign out"
-        android:textColor="@color/black"
+        android:textColor="@color/white"
         android:textSize="15dp"
         android:textStyle="bold" />
 
