@@ -47,14 +47,6 @@ public class User implements Serializable {
         mKey = key;
     }
 
-    public String getmKey() {
-        return mKey;
-    }
-
-    public void setmKey(String mKey) {
-        this.mKey = mKey;
-    }
-
     public List<String> getImageIds() {
         return imageIds;
     }

@@ -2,6 +2,7 @@ package com.anhnhy.printerest.model;
 
 import com.google.firebase.database.Exclude;
 
+import java.util.ArrayList;
 import java.util.List;
 
 public class Image {
@@ -20,6 +21,7 @@ public class Image {
         this.name = name;
         this.imageUrl = imageUrl;
         this.senderId = senderId;
+        this.likeIds = new ArrayList<>();
     }
 
     public String getName() {
