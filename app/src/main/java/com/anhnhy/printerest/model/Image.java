@@ -8,9 +8,13 @@ import java.util.List;
 public class Image {
     private String name;
     private String imageUrl;
-    private String mKey;
+    private String key;
     private String senderId;
+
+    private int likeCounts;
+
     private List<String> likeIds;
+
     public Image() {
     }
 
@@ -21,6 +25,7 @@ public class Image {
         this.name = name;
         this.imageUrl = imageUrl;
         this.senderId = senderId;
+        this.likeCounts = 0;
         this.likeIds = new ArrayList<>();
     }
 
@@ -58,11 +63,11 @@ public class Image {
 
     @Exclude
     public String getKey() {
-        return mKey;
+        return key;
     }
 
     @Exclude
     public void setKey(String key) {
-        mKey = key;
+        key = key;
     }
 }

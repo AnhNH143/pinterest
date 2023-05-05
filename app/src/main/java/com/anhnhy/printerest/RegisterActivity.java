@@ -5,7 +5,6 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import android.content.Intent;
 import android.os.Bundle;
-import android.text.TextUtils;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
@@ -19,48 +18,70 @@ import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.firestore.CollectionReference;
+import com.google.firebase.firestore.DocumentReference;
+import com.google.firebase.firestore.FirebaseFirestore;
 
 
 public class RegisterActivity extends AppCompatActivity {
 
-    EditText txt_email, txt_name, txt_password, txt_repassword;
+    EditText txt_email, txt_name, txt_password, txt_re_password;
     Button btn_register, btn_back;
-    protected FirebaseAuth mFirebaseAuth;
-    private DatabaseReference mDatabaseRef;
+    protected FirebaseAuth fbAuth;
+    private DatabaseReference dbRef;
+//    private FirebaseFirestore fbStore;
     String UID;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_register);
+
         initView();
-        mFirebaseAuth = FirebaseAuth.getInstance();
-        mDatabaseRef = FirebaseDatabase.getInstance().getReference("users");
+
+        // khởi tạo
+        fbAuth = FirebaseAuth.getInstance();
+        dbRef = FirebaseDatabase.getInstance().getReference("users");
+//        fbStore = FirebaseFirestore.getInstance();
+
         btn_register.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 String email = txt_email.getText().toString().trim().toLowerCase();
                 String name = txt_name.getText().toString().trim();
                 String password = txt_password.getText().toString();
-                String repassword = txt_repassword.getText().toString();
+                String re_password = txt_re_password.getText().toString();
 
                 // TODO: Kiểm tra email đã đăng ký trên firebase chưa, nếu có thông báo chọn email khác
-                // check validate
                 if (CheckValidate.isNone(email) ||
                         CheckValidate.isNone(name) ||
                         CheckValidate.isNone(password) ||
-                        CheckValidate.isNone(repassword)) {
+                        CheckValidate.isNone(re_password)) {
                     Toast.makeText(RegisterActivity.this, "Vui lòng nhập đủ các trường", Toast.LENGTH_SHORT).show();
                 } else {
-                    // kiểm tra password có trùng nhau
-                    if (password.equals(repassword)) {
-                        mFirebaseAuth.createUserWithEmailAndPassword(email, password).
+                    if (password.equals(re_password)) {
+                        fbAuth.createUserWithEmailAndPassword(email, password).
                                 addOnSuccessListener(new OnSuccessListener<AuthResult>() {
                                     @Override
                                     public void onSuccess(AuthResult authResult) {
-                                        UID = mFirebaseAuth.getCurrentUser().getUid();
+                                        UID = fbAuth.getCurrentUser().getUid();
                                         User userRegister = new User(name, email);
-                                        mDatabaseRef.child(UID).setValue(userRegister);
+
+                                        // up lên firebase realtime database
+                                        dbRef.child(UID).setValue(userRegister);
+
+                                        // bỏ kb up lên cloud firestore
+//                                        fbStore.collection("users").document(UID).set(userRegister);
+//                                                .addOnSuccessListener(new OnSuccessListener<Void>() {
+//                                                    @Override
+//                                                    public void onSuccess(Void aVoid) {
+//                                                    }
+//                                                })
+//                                                .addOnFailureListener(new OnFailureListener() {
+//                                                    @Override
+//                                                    public void onFailure(@NonNull Exception e) {
+//                                                    }
+//                                                });
 
                                         Toast.makeText(RegisterActivity.this, "Đăng ký thành công", Toast.LENGTH_SHORT).show();
                                         Intent intent = new Intent(RegisterActivity.this, LoginActivity.class);
@@ -93,7 +114,7 @@ public class RegisterActivity extends AppCompatActivity {
         txt_email = findViewById(R.id.txt_email);
         txt_name = findViewById(R.id.txt_name);
         txt_password = findViewById(R.id.txt_password);
-        txt_repassword = findViewById(R.id.txt_re_password);
+        txt_re_password = findViewById(R.id.txt_re_password);
         btn_register = findViewById(R.id.btn_register);
         btn_back = findViewById(R.id.btn_back);
     }

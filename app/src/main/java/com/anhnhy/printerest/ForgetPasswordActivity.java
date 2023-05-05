@@ -11,7 +11,6 @@ import android.widget.EditText;
 import android.widget.Toast;
 
 import com.anhnhy.printerest.helper.CheckValidate;
-import com.anhnhy.printerest.model.User;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.Task;
@@ -21,7 +20,7 @@ public class ForgetPasswordActivity extends AppCompatActivity {
 
     EditText txt_email;
     Button btn_updatePassword, btn_back;
-    FirebaseAuth mFirebaseAuth;
+    FirebaseAuth fbAuth;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -32,11 +31,11 @@ public class ForgetPasswordActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 String email = txt_email.getText().toString().trim().toLowerCase();
-                mFirebaseAuth = FirebaseAuth.getInstance();
+                fbAuth = FirebaseAuth.getInstance();
                 if (CheckValidate.isNone(email)) {
                     Toast.makeText(ForgetPasswordActivity.this, "Vui lòng nhập lại email", Toast.LENGTH_SHORT).show();
                 } else {
-                    mFirebaseAuth.sendPasswordResetEmail(email).addOnCompleteListener(new OnCompleteListener<Void>() {
+                    fbAuth.sendPasswordResetEmail(email).addOnCompleteListener(new OnCompleteListener<Void>() {
                         @Override
                         public void onComplete(@NonNull Task<Void> task) {
                             if (task.isSuccessful()) {

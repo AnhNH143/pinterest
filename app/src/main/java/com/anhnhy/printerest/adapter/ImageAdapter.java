@@ -19,27 +19,27 @@ import com.squareup.picasso.Picasso;
 import java.util.List;
 
 public class ImageAdapter extends RecyclerView.Adapter<ImageAdapter.ImageViewHolder> {
-    private Context mContext;
-    private List<Image> mImages;
+    private Context context;
+    private List<Image> images;
 
-    private OnItemClickListener mListener;
+    private OnItemClickListener itemClickListener;
 
-    public ImageAdapter(Context context, List<Image> uploads) {
-        mContext = context;
-        mImages = uploads;
+    public ImageAdapter(Context context, List<Image> images) {
+        this.context = context;
+        this.images = images;
     }
 
     @Override
     public ImageViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
-        View v = LayoutInflater.from(mContext).inflate(R.layout.image_item, parent, false);
+        View v = LayoutInflater.from(context).inflate(R.layout.image_item, parent, false);
         return new ImageViewHolder(v);
     }
 
     @Override
     public void onBindViewHolder(ImageViewHolder holder, int position) {
-        Image uploadCurrent = mImages.get(position);
+        Image uploadCurrent = images.get(position);
         holder.textViewName.setText(uploadCurrent.getName());
-        Picasso.with(mContext)
+        Picasso.with(context)
                 .load(uploadCurrent.getImageUrl())
                 .fit()
                 .centerCrop()
@@ -48,7 +48,7 @@ public class ImageAdapter extends RecyclerView.Adapter<ImageAdapter.ImageViewHol
 
     @Override
     public int getItemCount() {
-        return mImages.size();
+        return images.size();
     }
 
     public class ImageViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener,
@@ -68,10 +68,10 @@ public class ImageAdapter extends RecyclerView.Adapter<ImageAdapter.ImageViewHol
 
         @Override
         public void onClick(View v) {
-            if (mListener != null) {
+            if (itemClickListener != null) {
                 int position = getAdapterPosition();
                 if (position != RecyclerView.NO_POSITION) {
-                    mListener.onItemClick(position);
+                    itemClickListener.onItemClick(position);
                 }
             }
         }
@@ -88,16 +88,16 @@ public class ImageAdapter extends RecyclerView.Adapter<ImageAdapter.ImageViewHol
 
         @Override
         public boolean onMenuItemClick(MenuItem item) {
-            if (mListener != null) {
+            if (itemClickListener != null) {
                 int position = getAdapterPosition();
                 if (position != RecyclerView.NO_POSITION) {
 
                     switch (item.getItemId()) {
                         case 1:
-                            mListener.onWhatEverClick(position);
+                            itemClickListener.onWhatEverClick(position);
                             return true;
                         case 2:
-                            mListener.onDeleteClick(position);
+                            itemClickListener.onDeleteClick(position);
                             return true;
                     }
                 }
@@ -115,6 +115,6 @@ public class ImageAdapter extends RecyclerView.Adapter<ImageAdapter.ImageViewHol
     }
 
     public void setOnItemClickListener(OnItemClickListener listener) {
-        mListener = listener;
+        itemClickListener = listener;
     }
 }
