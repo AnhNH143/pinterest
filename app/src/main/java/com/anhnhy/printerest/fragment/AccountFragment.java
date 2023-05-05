@@ -32,8 +32,8 @@ public class AccountFragment extends Fragment {
     private TextView u_name;
     private TextView u_email;
     private Button btn_sign_out, btn_change_password;
-    private DatabaseReference mDatabaseRef;
-    FirebaseAuth mFirebaseAuth;
+    private DatabaseReference dbRef;
+    FirebaseAuth fbAuth;
 
     public AccountFragment() {
     }
@@ -51,8 +51,8 @@ public class AccountFragment extends Fragment {
         u_email = view.findViewById(R.id.u_email);
         btn_sign_out = view.findViewById(R.id.btn_sign_out);
         btn_change_password = view.findViewById(R.id.btn_change_password);
-        mFirebaseAuth =  FirebaseAuth.getInstance();
-        mDatabaseRef = FirebaseDatabase.getInstance().getReference().
+        fbAuth =  FirebaseAuth.getInstance();
+        dbRef = FirebaseDatabase.getInstance().getReference().
                 child("users").child(FirebaseAuth.getInstance().getCurrentUser().getUid());
         displayData();
 
@@ -60,7 +60,7 @@ public class AccountFragment extends Fragment {
             @Override
             public void onClick(View v) {
                 Toast.makeText(getActivity(), "Kiểm tra email để cập nhập mật khẩu", Toast.LENGTH_LONG).show();
-                mFirebaseAuth.sendPasswordResetEmail(mFirebaseAuth.getCurrentUser().getEmail()).addOnCompleteListener(new OnCompleteListener<Void>() {
+                fbAuth.sendPasswordResetEmail(fbAuth.getCurrentUser().getEmail()).addOnCompleteListener(new OnCompleteListener<Void>() {
                     @Override
                     public void onComplete(@NonNull Task<Void> task) {
                         if (task.isSuccessful()) {
@@ -110,7 +110,7 @@ public class AccountFragment extends Fragment {
     }
 
     private void displayData() {
-        mDatabaseRef.addValueEventListener(new ValueEventListener() {
+        dbRef.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshot) {
                 if (snapshot.exists()) {

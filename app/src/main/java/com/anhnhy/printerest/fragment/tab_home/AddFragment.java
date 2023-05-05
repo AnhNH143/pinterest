@@ -22,8 +22,11 @@ import com.anhnhy.printerest.model.Image;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.OnProgressListener;
 import com.google.firebase.storage.StorageReference;
@@ -39,18 +42,20 @@ import com.anhnhy.printerest.R;
 
 public class AddFragment extends Fragment {
     private static final int PICK_IMAGE_REQUEST = 1;
-    private Button mButtonChooseImage;
-    private Button mButtonUpload;
-    private TextView mTextViewShowUploads;
-    private EditText mEditTextFileName;
-    private ImageView mImageView;
-    private ProgressBar mProgressBar;
-    private Uri mImageUri;
-    private StorageReference mStorageRef;
-    private DatabaseReference mDatabaseRef;
-    private StorageTask mUploadTask;
-    private String UID = FirebaseAuth.getInstance().getCurrentUser().getUid();
+    private Button buttonChooseImage;
+    private Button buttonUpload;
+    private TextView textViewShowUploads;
+    private EditText editTextFileName;
+    private ImageView imageView;
+    private ProgressBar progressBar;
+    private Uri imageUri;
+    private StorageReference storageRef;
+    private DatabaseReference dbRef;
+//    private FirebaseFirestore fbStore;
 
+//    private DatabaseReference mDatabaseRefUser;
+    private StorageTask uploadTask;
+    private String UID = FirebaseAuth.getInstance().getCurrentUser().getUid();
     public AddFragment() {
     }
 
@@ -63,27 +68,42 @@ public class AddFragment extends Fragment {
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
-        mButtonChooseImage = view.findViewById(R.id.button_choose_image);
-        mButtonUpload = view.findViewById(R.id.button_upload);
-        mTextViewShowUploads = view.findViewById(R.id.text_view_show_uploads);
-        mEditTextFileName = view.findViewById(R.id.edit_text_file_name);
-        mImageView = view.findViewById(R.id.image_view);
-        mProgressBar = view.findViewById(R.id.progress_bar);
+        buttonChooseImage = view.findViewById(R.id.button_choose_image);
+        buttonUpload = view.findViewById(R.id.button_upload);
+        textViewShowUploads = view.findViewById(R.id.text_view_show_uploads);
+        editTextFileName = view.findViewById(R.id.edit_text_file_name);
+        imageView = view.findViewById(R.id.image_view);
+        progressBar = view.findViewById(R.id.progress_bar);
 
-        mStorageRef = FirebaseStorage.getInstance().getReference("images");
-        mDatabaseRef = FirebaseDatabase.getInstance().getReference("images");
+        storageRef = FirebaseStorage.getInstance().getReference("images");
+        dbRef = FirebaseDatabase.getInstance().getReference("images");
+//        fbStore = FirebaseFirestore.getInstance();
 
-        mButtonChooseImage.setOnClickListener(new View.OnClickListener() {
+        // kịch bản này bỏ qua - đang sai
+//        mDatabaseRefUser = FirebaseDatabase.getInstance().getReference("users").child(UID);
+//        mDatabaseRefUser.addValueEventListener(new ValueEventListener() {
+//            @Override
+//            public void onDataChange(@NonNull DataSnapshot snapshot) {
+//                UName = snapshot.child("name").getValue().toString();
+//            }
+//
+//            @Override
+//            public void onCancelled(@NonNull DatabaseError error) {
+//
+//            }
+//        });
+
+        buttonChooseImage.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 openFileChooser();
             }
         });
 
-        mButtonUpload.setOnClickListener(new View.OnClickListener() {
+        buttonUpload.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if (mUploadTask != null && mUploadTask.isInProgress()) {
+                if (uploadTask != null && uploadTask.isInProgress()) {
                     Toast.makeText(getContext(), "Upload in progress", Toast.LENGTH_SHORT).show();
                 } else {
                     uploadFile();
@@ -91,7 +111,7 @@ public class AddFragment extends Fragment {
             }
         });
 
-        mTextViewShowUploads.setOnClickListener(new View.OnClickListener() {
+        textViewShowUploads.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 openImagesActivity();
@@ -117,8 +137,8 @@ public class AddFragment extends Fragment {
 
         if (requestCode == PICK_IMAGE_REQUEST && resultCode == Activity.RESULT_OK
                 && data != null && data.getData() != null) {
-            mImageUri = data.getData();
-            Picasso.with(getContext()).load(mImageUri).into(mImageView);
+            imageUri = data.getData();
+            Picasso.with(getContext()).load(imageUri).into(imageView);
         }
     }
 
@@ -129,11 +149,12 @@ public class AddFragment extends Fragment {
     }
 
     private void uploadFile() {
-        if (mImageUri != null) {
-            StorageReference fileReference = mStorageRef.child(System.currentTimeMillis()
-                    + "." + getFileExtension(mImageUri));
+        if (imageUri != null) {
+            StorageReference fileReference = storageRef.child(System.currentTimeMillis()
+                    + "." + getFileExtension(imageUri));
 
-            mUploadTask = fileReference.putFile(mImageUri)
+            // up image lên firebase storage
+            uploadTask = fileReference.putFile(imageUri)
                     .addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
                         @Override
                         public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
@@ -141,7 +162,7 @@ public class AddFragment extends Fragment {
                             handler.postDelayed(new Runnable() {
                                 @Override
                                 public void run() {
-                                    mProgressBar.setProgress(0);
+                                    progressBar.setProgress(0);
                                 }
                             }, 500);
 
@@ -150,10 +171,13 @@ public class AddFragment extends Fragment {
                             fileReference.getDownloadUrl().addOnSuccessListener(new OnSuccessListener<Uri>() {
                                 @Override
                                 public void onSuccess(Uri uri) {
-                                    Image upload = new Image(mEditTextFileName.getText().toString().trim(),
+                                    Image image = new Image(editTextFileName.getText().toString().trim(),
                                             uri.toString(), UID);
-                                    String uploadId = mDatabaseRef.push().getKey();
-                                    mDatabaseRef.child(uploadId).setValue(upload);
+                                    String imageId = dbRef.push().getKey();
+                                    // up lên realtime firebase
+                                    dbRef.child(imageId).setValue(image);
+                                    // bỏ không lưu vào firestore nữa
+//                                    fbStore.collection("images").document(imageId).set(image);
                                 }
                             });
                         }
@@ -168,7 +192,7 @@ public class AddFragment extends Fragment {
                         @Override
                         public void onProgress(UploadTask.TaskSnapshot taskSnapshot) {
                             double progress = (100.0 * taskSnapshot.getBytesTransferred() / taskSnapshot.getTotalByteCount());
-                            mProgressBar.setProgress((int) progress);
+                            progressBar.setProgress((int) progress);
                         }
                     });
         } else {

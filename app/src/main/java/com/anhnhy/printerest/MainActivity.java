@@ -34,9 +34,9 @@ public class MainActivity extends AppCompatActivity
     private static final int FRAGMENT_HOME = 1;
     private static final int FRAGMENT_ALBUM = 2;
     private static final int FRAGMENT_ACCOUNT = 3;
-    private DatabaseReference mDatabaseRef;
+    private DatabaseReference dbRef;
     private int currentFragment = FRAGMENT_HOME;
-
+    private String UID = FirebaseAuth.getInstance().getCurrentUser().getUid();
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -44,8 +44,8 @@ public class MainActivity extends AppCompatActivity
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
-        mDatabaseRef = FirebaseDatabase.getInstance().getReference().
-                child("users").child(FirebaseAuth.getInstance().getCurrentUser().getUid());
+        dbRef = FirebaseDatabase.getInstance().getReference().
+                child("users").child(UID);
 
         displayData();
 
@@ -64,7 +64,7 @@ public class MainActivity extends AppCompatActivity
     }
 
     private void displayData() {
-        mDatabaseRef.addValueEventListener(new ValueEventListener() {
+        dbRef.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshot) {
                 if (snapshot.exists()) {
@@ -103,9 +103,6 @@ public class MainActivity extends AppCompatActivity
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
-        // Handle action bar item clicks here. The action bar will
-        // automatically handle clicks on the Home/Up button, so long
-        // as you specify a parent activity in AndroidManifest.xml.
         int id = item.getItemId();
 
         //noinspection SimplifiableIfStatement

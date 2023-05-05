@@ -2,13 +2,16 @@ package com.anhnhy.printerest.model;
 
 import com.google.firebase.database.Exclude;
 
+import org.checkerframework.checker.units.qual.A;
+
 import java.io.Serializable;
+import java.util.ArrayList;
 import java.util.List;
 
 public class User implements Serializable {
     private String name;
     private String email;
-    private String mKey;
+    private String key;
 
     private List<String> imageIds;
 
@@ -19,6 +22,8 @@ public class User implements Serializable {
     public User(String name, String email) {
         this.name = name;
         this.email = email;
+        this.imageIds = new ArrayList<>();
+        this.likeIds = new ArrayList<>();
     }
 
     public String getName() {
@@ -39,20 +44,12 @@ public class User implements Serializable {
 
     @Exclude
     public String getKey() {
-        return mKey;
+        return key;
     }
 
     @Exclude
     public void setKey(String key) {
-        mKey = key;
-    }
-
-    public String getmKey() {
-        return mKey;
-    }
-
-    public void setmKey(String mKey) {
-        this.mKey = mKey;
+        this.key = key;
     }
 
     public List<String> getImageIds() {

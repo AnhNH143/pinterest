@@ -22,25 +22,29 @@ public class LoginActivity extends AppCompatActivity {
     EditText txt_email, txt_password;
     TextView txt_forget_password;
     Button btn_login, btn_register;
-    FirebaseAuth mFirebaseAuth;
+    FirebaseAuth fbAuth;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_login);
+
         initView();
-        mFirebaseAuth = FirebaseAuth.getInstance();
+
+        fbAuth = FirebaseAuth.getInstance();
 
         btn_login.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 String email = txt_email.getText().toString().trim().toLowerCase();
                 String password = txt_password.getText().toString();
+                // check
                 if (CheckValidate.isNone(email) || CheckValidate.isNone(password)) {
                     Toast.makeText(LoginActivity.this,
                             "Nhập lại email/password", Toast.LENGTH_SHORT).show();
                 } else {
-                    mFirebaseAuth.signInWithEmailAndPassword(
+                    // đăng nhập = email/pw đã đăng ký
+                    fbAuth.signInWithEmailAndPassword(
                                     email, password).
                             addOnSuccessListener(new OnSuccessListener<AuthResult>() {
                                 @Override
@@ -85,5 +89,4 @@ public class LoginActivity extends AppCompatActivity {
         btn_login = findViewById(R.id.btn_login);
         btn_register = findViewById(R.id.btn_register);
     }
-
 }

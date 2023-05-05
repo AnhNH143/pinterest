@@ -1,5 +1,6 @@
 package com.anhnhy.printerest;
 
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
@@ -11,12 +12,16 @@ import android.widget.Toast;
 
 import com.anhnhy.printerest.adapter.ImageAdapter;
 import com.anhnhy.printerest.model.Image;
+import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
+import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.firestore.QueryDocumentSnapshot;
+import com.google.firebase.firestore.QuerySnapshot;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
 
@@ -25,50 +30,70 @@ import java.util.List;
 
 public class ImagesActivity extends AppCompatActivity implements ImageAdapter.OnItemClickListener {
 
-    private RecyclerView mRecyclerView;
-    private ImageAdapter mAdapter;
-    private ProgressBar mProgressCircle;
-    private FirebaseStorage mStorage;
-    private DatabaseReference mDatabaseRef;
-    private ValueEventListener mDBListener;
-    private List<Image> mImages;
+    private RecyclerView recyclerView;
+    private ImageAdapter adapter;
+    private ProgressBar progressCircle;
+    private FirebaseStorage fbStorage;
+    private DatabaseReference dbRef;
+    private ValueEventListener valueEventListener;
+//    private FirebaseFirestore fbStore;
+    private List<Image> images;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_images);
 
-        mRecyclerView = findViewById(R.id.recycler_view);
-        mRecyclerView.setHasFixedSize(true);
-        mRecyclerView.setLayoutManager(new LinearLayoutManager(this));
-        mProgressCircle = findViewById(R.id.progress_circle);
+        recyclerView = findViewById(R.id.recycler_view);
+        recyclerView.setHasFixedSize(true);
+        recyclerView.setLayoutManager(new LinearLayoutManager(this));
+        progressCircle = findViewById(R.id.progress_circle);
 
-        mImages = new ArrayList<>();
-        mAdapter = new ImageAdapter(ImagesActivity.this, mImages);
+        images = new ArrayList<>();
+        adapter = new ImageAdapter(ImagesActivity.this, images);
 
-        mRecyclerView.setAdapter(mAdapter);
-        mAdapter.setOnItemClickListener(ImagesActivity.this);
+        recyclerView.setAdapter(adapter);
+        adapter.setOnItemClickListener(ImagesActivity.this);
 
-        mStorage = FirebaseStorage.getInstance();
-        mDatabaseRef = FirebaseDatabase.getInstance().getReference("images");
-
-        mDBListener = mDatabaseRef.addValueEventListener(new ValueEventListener() {
+        fbStorage = FirebaseStorage.getInstance();
+        // đang lỗi
+//        fbStore = FirebaseFirestore.getInstance();
+//
+//        fbStore.collection("images").get().addOnSuccessListener(new OnSuccessListener<QuerySnapshot>() {
+//            @Override
+//            public void onSuccess(QuerySnapshot queryDocumentSnapshots) {
+//                for (QueryDocumentSnapshot queryDocumentSnapshot : queryDocumentSnapshots) {
+//                    String name  = queryDocumentSnapshot.getString("name");
+//                    String imageUrl  = queryDocumentSnapshot.getString("imageUrl");
+//                    String senderId  = queryDocumentSnapshot.getString("senderId");
+////                    Image image = queryDocumentSnapshot.toObject(Image.class);
+//                    images.add(new Image(name, imageUrl, senderId));
+//                }
+//            }
+//        }).addOnFailureListener(new OnFailureListener() {
+//            @Override
+//            public void onFailure(@NonNull Exception e) {
+//
+//            }
+//        });
+        dbRef = FirebaseDatabase.getInstance().getReference("images");
+        valueEventListener = dbRef.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
-                mImages.clear();
+                images.clear();
                 for (DataSnapshot postSnapshot : dataSnapshot.getChildren()) {
-                    Image upload = postSnapshot.getValue(Image.class);
-                    upload.setKey(postSnapshot.getKey());
-                    mImages.add(upload);
+                    Image image = postSnapshot.getValue(Image.class);
+                    image.setKey(postSnapshot.getKey());
+                    images.add(image);
                 }
-                mAdapter.notifyDataSetChanged();
-                mProgressCircle.setVisibility(View.INVISIBLE);
+                adapter.notifyDataSetChanged();
+                progressCircle.setVisibility(View.INVISIBLE);
             }
 
             @Override
             public void onCancelled(DatabaseError databaseError) {
                 Toast.makeText(ImagesActivity.this, databaseError.getMessage(), Toast.LENGTH_SHORT).show();
-                mProgressCircle.setVisibility(View.INVISIBLE);
+                progressCircle.setVisibility(View.INVISIBLE);
             }
         });
     }
@@ -85,14 +110,14 @@ public class ImagesActivity extends AppCompatActivity implements ImageAdapter.On
 
     @Override
     public void onDeleteClick(int position) {
-        Image selectedItem = mImages.get(position);
+        Image selectedItem = images.get(position);
         final String selectedKey = selectedItem.getKey();
 
-        StorageReference imageRef = mStorage.getReferenceFromUrl(selectedItem.getImageUrl());
+        StorageReference imageRef = fbStorage.getReferenceFromUrl(selectedItem.getImageUrl());
         imageRef.delete().addOnSuccessListener(new OnSuccessListener<Void>() {
             @Override
             public void onSuccess(Void aVoid) {
-                mDatabaseRef.child(selectedKey).removeValue();
+                dbRef.child(selectedKey).removeValue();
                 Toast.makeText(ImagesActivity.this, "Item deleted", Toast.LENGTH_SHORT).show();
             }
         });
@@ -101,7 +126,7 @@ public class ImagesActivity extends AppCompatActivity implements ImageAdapter.On
     @Override
     protected void onDestroy() {
         super.onDestroy();
-        mDatabaseRef.removeEventListener(mDBListener);
+        dbRef.removeEventListener(valueEventListener);
     }
 
 }
