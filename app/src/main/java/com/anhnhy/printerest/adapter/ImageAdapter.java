@@ -14,6 +14,7 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.anhnhy.printerest.R;
 import com.anhnhy.printerest.model.Image;
+import com.bumptech.glide.Glide;
 import com.squareup.picasso.Picasso;
 
 import java.util.List;
@@ -39,13 +40,18 @@ public class ImageAdapter extends RecyclerView.Adapter<ImageAdapter.ImageViewHol
     public void onBindViewHolder(ImageViewHolder holder, int position) {
         Image uploadCurrent = images.get(position);
         holder.textViewName.setText(uploadCurrent.getName());
-        Picasso.with(context)
+
+        //        Picasso.with(context)
+//                .load(uploadCurrent.getImageUrl())
+//                .fit()
+//                .centerCrop()
+//                .into(holder.imageView);
+        // sử dụng vẽ bằng glide
+        Glide.with(context)
                 .load(uploadCurrent.getImageUrl())
-                .fit()
-                .centerCrop()
+                .fitCenter()
                 .into(holder.imageView);
     }
-
     @Override
     public int getItemCount() {
         return images.size();
