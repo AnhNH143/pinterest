@@ -12,16 +12,12 @@ import android.widget.Toast;
 
 import com.anhnhy.printerest.adapter.ImageAdapter;
 import com.anhnhy.printerest.model.Image;
-import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
-import com.google.firebase.firestore.FirebaseFirestore;
-import com.google.firebase.firestore.QueryDocumentSnapshot;
-import com.google.firebase.firestore.QuerySnapshot;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
 
@@ -36,7 +32,6 @@ public class ImagesActivity extends AppCompatActivity implements ImageAdapter.On
     private FirebaseStorage fbStorage;
     private DatabaseReference dbRef;
     private ValueEventListener valueEventListener;
-//    private FirebaseFirestore fbStore;
     private List<Image> images;
 
     @Override
@@ -56,26 +51,6 @@ public class ImagesActivity extends AppCompatActivity implements ImageAdapter.On
         adapter.setOnItemClickListener(ImagesActivity.this);
 
         fbStorage = FirebaseStorage.getInstance();
-        // đang lỗi
-//        fbStore = FirebaseFirestore.getInstance();
-//
-//        fbStore.collection("images").get().addOnSuccessListener(new OnSuccessListener<QuerySnapshot>() {
-//            @Override
-//            public void onSuccess(QuerySnapshot queryDocumentSnapshots) {
-//                for (QueryDocumentSnapshot queryDocumentSnapshot : queryDocumentSnapshots) {
-//                    String name  = queryDocumentSnapshot.getString("name");
-//                    String imageUrl  = queryDocumentSnapshot.getString("imageUrl");
-//                    String senderId  = queryDocumentSnapshot.getString("senderId");
-////                    Image image = queryDocumentSnapshot.toObject(Image.class);
-//                    images.add(new Image(name, imageUrl, senderId));
-//                }
-//            }
-//        }).addOnFailureListener(new OnFailureListener() {
-//            @Override
-//            public void onFailure(@NonNull Exception e) {
-//
-//            }
-//        });
         dbRef = FirebaseDatabase.getInstance().getReference("images");
         valueEventListener = dbRef.addValueEventListener(new ValueEventListener() {
             @Override

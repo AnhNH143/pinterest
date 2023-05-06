@@ -15,7 +15,6 @@ import androidx.annotation.Nullable;
 import androidx.appcompat.app.AlertDialog;
 import androidx.fragment.app.Fragment;
 
-import com.anhnhy.printerest.ForgetPasswordActivity;
 import com.anhnhy.printerest.LoginActivity;
 import com.anhnhy.printerest.R;
 import com.google.android.gms.tasks.OnCompleteListener;
@@ -81,29 +80,28 @@ public class AccountFragment extends Fragment {
         btn_sign_out.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent intent = new Intent(getActivity(), LoginActivity.class);
-                startActivity(intent);
-//                AlertDialog.Builder builder = new AlertDialog.Builder(getActivity().getApplicationContext());
-//                builder.setTitle("");
-//                builder.setMessage("Bạn có muốn đăng xuất");
-//                builder.setIcon(R.drawable.ic_sign_out);
-//                builder.setPositiveButton("Đăng xuất", new DialogInterface.OnClickListener() {
-//                    @Override
-//                    public void onClick(DialogInterface dialog, int which) {
-//                        Intent intent = new Intent(getActivity(), LoginActivity.class);
-//                        startActivity(intent);
-//                    }
-//                });
-//
-//                builder.setNegativeButton("Hủy", new DialogInterface.OnClickListener() {
-//                    @Override
-//                    public void onClick(DialogInterface dialog, int which) {
-//
-//                    }
-//                });
-//
-//                AlertDialog dialog = builder.create();
-//                dialog.show();
+                Intent intent = new Intent(getContext(), LoginActivity.class);
+                AlertDialog.Builder builder = new AlertDialog.Builder(getContext());
+                builder.setTitle("");
+                builder.setMessage("Bạn có muốn đăng xuất");
+                builder.setIcon(R.drawable.ic_sign_out);
+                builder.setPositiveButton("Đăng xuất", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        Intent intent = new Intent(getContext(), LoginActivity.class);
+                        startActivity(intent);
+                    }
+                });
+
+                builder.setNegativeButton("Hủy", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+
+                    }
+                });
+
+                AlertDialog dialog = builder.create();
+                dialog.show();
 
             }
         });
