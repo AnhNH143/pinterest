@@ -68,6 +68,6 @@ public class Image {
 
     @Exclude
     public void setKey(String key) {
-        key = key;
+        this.key = key;
     }
 }

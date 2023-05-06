@@ -41,11 +41,6 @@ public class ImageAdapter extends RecyclerView.Adapter<ImageAdapter.ImageViewHol
         Image uploadCurrent = images.get(position);
         holder.textViewName.setText(uploadCurrent.getName());
 
-        //        Picasso.with(context)
-//                .load(uploadCurrent.getImageUrl())
-//                .fit()
-//                .centerCrop()
-//                .into(holder.imageView);
         // sử dụng vẽ bằng glide
         Glide.with(context)
                 .load(uploadCurrent.getImageUrl())
