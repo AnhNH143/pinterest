@@ -28,7 +28,7 @@ import com.google.firebase.storage.StorageReference;
 import java.util.ArrayList;
 import java.util.List;
 
-public class ExploreFragment extends Fragment implements ImageAdapter.OnItemClickListener{
+public class ExploreFragment extends Fragment implements ImageAdapter.OnItemClickListener {
     private RecyclerView recyclerView;
     private ImageAdapter adapter;
     private ProgressBar progressCircle;
