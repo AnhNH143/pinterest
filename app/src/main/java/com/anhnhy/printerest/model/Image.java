@@ -2,18 +2,17 @@ package com.anhnhy.printerest.model;
 
 import com.google.firebase.database.Exclude;
 
+import java.io.Serializable;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 
-public class Image {
+public class Image implements Serializable {
     private String name;
     private String imageUrl;
     private String key;
     private String senderId;
-
-    private int likeCounts;
-
-    private List<String> likeIds;
+    private HashMap<String, String> likeIds;
 
     public Image() {
     }
@@ -25,8 +24,7 @@ public class Image {
         this.name = name;
         this.imageUrl = imageUrl;
         this.senderId = senderId;
-        this.likeCounts = 0;
-        this.likeIds = new ArrayList<>();
+        this.likeIds = new HashMap<>();
     }
 
     public String getName() {
@@ -53,11 +51,11 @@ public class Image {
         this.senderId = senderId;
     }
 
-    public List<String> getLikeIds() {
+    public HashMap<String,String> getLikeIds() {
         return likeIds;
     }
 
-    public void setLikeIds(List<String> likeIds) {
+    public void setLikeIds(HashMap<String, String> likeIds) {
         this.likeIds = likeIds;
     }
 
@@ -68,6 +66,6 @@ public class Image {
 
     @Exclude
     public void setKey(String key) {
-        key = key;
+        this.key = key;
     }
 }

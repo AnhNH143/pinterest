@@ -15,8 +15,9 @@ import android.view.MenuItem;
 import android.widget.TextView;
 
 import com.anhnhy.printerest.fragment.AccountFragment;
-import com.anhnhy.printerest.fragment.AlbumFragment;
 import com.anhnhy.printerest.fragment.HomeFragment;
+import com.anhnhy.printerest.fragment.LikeFragment;
+import com.anhnhy.printerest.fragment.YourFragment;
 import com.google.android.material.navigation.NavigationView;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DataSnapshot;
@@ -28,15 +29,16 @@ import com.google.firebase.database.ValueEventListener;
 
 public class MainActivity extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener {
-    private TextView u_name;
-    private TextView u_email;
 
     private static final int FRAGMENT_HOME = 1;
-    private static final int FRAGMENT_ALBUM = 2;
-    private static final int FRAGMENT_ACCOUNT = 3;
-    private DatabaseReference dbRef;
+    private static final int FRAGMENT_LIKE = 2;
+    private static final int FRAGMENT_YOUR = 3;
+    private static final int FRAGMENT_ACCOUNT = 4;
     private int currentFragment = FRAGMENT_HOME;
+    private TextView u_name, u_email;
+    private DatabaseReference dbRef;
     private String UID = FirebaseAuth.getInstance().getCurrentUser().getUid();
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -61,27 +63,6 @@ public class MainActivity extends AppCompatActivity
         replaceFragment(new HomeFragment());
         navigationView.setCheckedItem(R.id.nav_home);
         setTitleToolBar();
-    }
-
-    private void displayData() {
-        dbRef.addValueEventListener(new ValueEventListener() {
-            @Override
-            public void onDataChange(@NonNull DataSnapshot snapshot) {
-                if (snapshot.exists()) {
-                    u_name = findViewById(R.id.u_name);
-                    u_email = findViewById(R.id.u_email);
-                    String name = snapshot.child("name").getValue().toString();
-                    String email = snapshot.child("email").getValue().toString();
-                    u_name.setText(name);
-                    u_email.setText(email);
-                }
-            }
-
-            @Override
-            public void onCancelled(@NonNull DatabaseError error) {
-
-            }
-        });
     }
 
     @Override
@@ -124,10 +105,15 @@ public class MainActivity extends AppCompatActivity
                 replaceFragment(new HomeFragment());
                 currentFragment = FRAGMENT_HOME;
             }
-        } else if (id == R.id.nav_album) {
-            if (FRAGMENT_ALBUM != currentFragment) {
-                replaceFragment(new AlbumFragment());
-                currentFragment = FRAGMENT_ALBUM;
+        } else if (id == R.id.nav_like_images) {
+            if (FRAGMENT_LIKE != currentFragment) {
+                replaceFragment(new LikeFragment());
+                currentFragment = FRAGMENT_LIKE;
+            }
+        } else if (id == R.id.nav_your_images) {
+            if (FRAGMENT_YOUR != currentFragment) {
+                replaceFragment(new YourFragment());
+                currentFragment = FRAGMENT_YOUR;
             }
         } else if (id == R.id.nav_account) {
             if (FRAGMENT_ACCOUNT != currentFragment) {
@@ -143,6 +129,27 @@ public class MainActivity extends AppCompatActivity
         return true;
     }
 
+    private void displayData() {
+        dbRef.addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot snapshot) {
+                if (snapshot.exists()) {
+                    u_name = findViewById(R.id.u_name);
+                    u_email = findViewById(R.id.u_email);
+                    String name = snapshot.child("name").getValue().toString();
+                    String email = snapshot.child("email").getValue().toString();
+                    u_name.setText(name);
+                    u_email.setText(email);
+                }
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError error) {
+
+            }
+        });
+    }
+
     private void replaceFragment(Fragment fragment) {
         FragmentTransaction fragmentTransaction = getSupportFragmentManager().beginTransaction();
         fragmentTransaction.replace(R.id.content_frame, fragment);
@@ -155,8 +162,11 @@ public class MainActivity extends AppCompatActivity
             case FRAGMENT_HOME:
                 title = getString(R.string.title_home);
                 break;
-            case FRAGMENT_ALBUM:
-                title = getString(R.string.title_album);
+            case FRAGMENT_LIKE:
+                title = getString(R.string.like_images);
+                break;
+            case FRAGMENT_YOUR:
+                title = getString(R.string.your_images);
                 break;
             case FRAGMENT_ACCOUNT:
                 title = getString(R.string.title_account);

@@ -18,10 +18,6 @@ import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
-import com.google.firebase.firestore.CollectionReference;
-import com.google.firebase.firestore.DocumentReference;
-import com.google.firebase.firestore.FirebaseFirestore;
-
 
 public class RegisterActivity extends AppCompatActivity {
 
@@ -29,8 +25,7 @@ public class RegisterActivity extends AppCompatActivity {
     Button btn_register, btn_back;
     protected FirebaseAuth fbAuth;
     private DatabaseReference dbRef;
-//    private FirebaseFirestore fbStore;
-    String UID;
+    private String UID = fbAuth.getCurrentUser().getUid();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -38,11 +33,8 @@ public class RegisterActivity extends AppCompatActivity {
         setContentView(R.layout.activity_register);
 
         initView();
-
-        // khởi tạo
         fbAuth = FirebaseAuth.getInstance();
         dbRef = FirebaseDatabase.getInstance().getReference("users");
-//        fbStore = FirebaseFirestore.getInstance();
 
         btn_register.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -64,24 +56,9 @@ public class RegisterActivity extends AppCompatActivity {
                                 addOnSuccessListener(new OnSuccessListener<AuthResult>() {
                                     @Override
                                     public void onSuccess(AuthResult authResult) {
-                                        UID = fbAuth.getCurrentUser().getUid();
                                         User userRegister = new User(name, email);
 
-                                        // up lên firebase realtime database
                                         dbRef.child(UID).setValue(userRegister);
-
-                                        // bỏ kb up lên cloud firestore
-//                                        fbStore.collection("users").document(UID).set(userRegister);
-//                                                .addOnSuccessListener(new OnSuccessListener<Void>() {
-//                                                    @Override
-//                                                    public void onSuccess(Void aVoid) {
-//                                                    }
-//                                                })
-//                                                .addOnFailureListener(new OnFailureListener() {
-//                                                    @Override
-//                                                    public void onFailure(@NonNull Exception e) {
-//                                                    }
-//                                                });
 
                                         Toast.makeText(RegisterActivity.this, "Đăng ký thành công", Toast.LENGTH_SHORT).show();
                                         Intent intent = new Intent(RegisterActivity.this, LoginActivity.class);

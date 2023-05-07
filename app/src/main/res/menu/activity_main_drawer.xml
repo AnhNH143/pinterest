@@ -7,9 +7,13 @@
             android:icon="@drawable/ic_home"
             android:title="@string/title_home" />
         <item
-            android:id="@+id/nav_album"
+            android:icon="@drawable/ic_like"
+            android:id="@+id/nav_like_images"
+            android:title="@string/like_images" />
+        <item
             android:icon="@drawable/ic_album"
-            android:title="@string/title_album" />
+            android:id="@+id/nav_your_images"
+            android:title="@string/your_images" />
         <item
             android:id="@+id/nav_account"
             android:icon="@drawable/ic_account"

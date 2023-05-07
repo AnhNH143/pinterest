@@ -11,26 +11,12 @@
         android:gravity="center"
         android:text="Album của bản" />
 
-    <Button
-        android:id="@+id/btn_upload_img"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="80dp"
-        android:text="Ảnh đăng lên" />
-
-    <Button
-        android:id="@+id/btn_like_img"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="80dp"
-        android:layout_toEndOf="@id/btn_upload_img"
-        android:text="Ảnh yêu thích" />
 
     <androidx.recyclerview.widget.RecyclerView
+        android:layout_marginTop="100dp"
         android:id="@+id/recycler_view"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_below="@id/btn_upload_img"
         app:layoutManager="androidx.recyclerview.widget.GridLayoutManager"
         app:spanCount="2" />
 

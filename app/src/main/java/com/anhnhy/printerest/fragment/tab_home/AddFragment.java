@@ -17,16 +17,12 @@ import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.anhnhy.printerest.ImagesActivity;
 import com.anhnhy.printerest.model.Image;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.auth.FirebaseAuth;
-import com.google.firebase.database.DataSnapshot;
-import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
-import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.OnProgressListener;
 import com.google.firebase.storage.StorageReference;
@@ -51,11 +47,10 @@ public class AddFragment extends Fragment {
     private Uri imageUri;
     private StorageReference storageRef;
     private DatabaseReference dbRef;
-//    private FirebaseFirestore fbStore;
-
-//    private DatabaseReference mDatabaseRefUser;
+    private DatabaseReference userRef;
     private StorageTask uploadTask;
     private String UID = FirebaseAuth.getInstance().getCurrentUser().getUid();
+
     public AddFragment() {
     }
 
@@ -70,28 +65,13 @@ public class AddFragment extends Fragment {
         super.onViewCreated(view, savedInstanceState);
         buttonChooseImage = view.findViewById(R.id.button_choose_image);
         buttonUpload = view.findViewById(R.id.button_upload);
-        textViewShowUploads = view.findViewById(R.id.text_view_show_uploads);
         editTextFileName = view.findViewById(R.id.edit_text_file_name);
         imageView = view.findViewById(R.id.image_view);
         progressBar = view.findViewById(R.id.progress_bar);
 
         storageRef = FirebaseStorage.getInstance().getReference("images");
         dbRef = FirebaseDatabase.getInstance().getReference("images");
-//        fbStore = FirebaseFirestore.getInstance();
-
-        // kịch bản này bỏ qua - đang sai
-//        mDatabaseRefUser = FirebaseDatabase.getInstance().getReference("users").child(UID);
-//        mDatabaseRefUser.addValueEventListener(new ValueEventListener() {
-//            @Override
-//            public void onDataChange(@NonNull DataSnapshot snapshot) {
-//                UName = snapshot.child("name").getValue().toString();
-//            }
-//
-//            @Override
-//            public void onCancelled(@NonNull DatabaseError error) {
-//
-//            }
-//        });
+        userRef = FirebaseDatabase.getInstance().getReference().child("users").child(UID);
 
         buttonChooseImage.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -110,18 +90,6 @@ public class AddFragment extends Fragment {
                 }
             }
         });
-
-        textViewShowUploads.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                openImagesActivity();
-            }
-        });
-    }
-
-    private void openImagesActivity() {
-        Intent intent = new Intent(getActivity(), ImagesActivity.class);
-        startActivity(intent);
     }
 
     private void openFileChooser() {
@@ -176,8 +144,9 @@ public class AddFragment extends Fragment {
                                     String imageId = dbRef.push().getKey();
                                     // up lên realtime firebase
                                     dbRef.child(imageId).setValue(image);
-                                    // bỏ không lưu vào firestore nữa
-//                                    fbStore.collection("images").document(imageId).set(image);
+
+                                    // update user
+                                    userRef.child("imageIds").child(imageId).setValue(imageId);
                                 }
                             });
                         }

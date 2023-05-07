@@ -1,6 +1,7 @@
 package com.anhnhy.printerest.helper;
 
 public class CheckValidate {
+
     private static CheckValidate checkValidate = new CheckValidate();
 
     private CheckValidate() {

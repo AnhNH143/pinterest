@@ -15,9 +15,6 @@
         android:theme="@style/Theme.Printerest"
         tools:targetApi="31">
         <activity
-            android:name=".ImagesActivity"
-            android:exported="false" />
-        <activity
             android:name=".RegisterActivity"
             android:exported="false" />
         <activity
