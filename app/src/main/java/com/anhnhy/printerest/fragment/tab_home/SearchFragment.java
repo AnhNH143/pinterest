@@ -17,9 +17,7 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.anhnhy.printerest.R;
 import com.anhnhy.printerest.adapter.ExploreSearchImageAdapter;
-import com.anhnhy.printerest.adapter.ImageAdapter;
 import com.anhnhy.printerest.model.Image;
-import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
@@ -27,7 +25,6 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 import com.google.firebase.storage.FirebaseStorage;
-import com.google.firebase.storage.StorageReference;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -43,9 +40,9 @@ public class SearchFragment extends Fragment implements ExploreSearchImageAdapte
     private FirebaseStorage fbStorage;
     private DatabaseReference dbRef;
     private DatabaseReference userRef;
-    private String UID = FirebaseAuth.getInstance().getCurrentUser().getUid();
     private ValueEventListener valueEventListener;
     private List<Image> images;
+    private String UID = FirebaseAuth.getInstance().getCurrentUser().getUid();
 
     public SearchFragment() {
     }
@@ -59,11 +56,11 @@ public class SearchFragment extends Fragment implements ExploreSearchImageAdapte
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
+
         txt_name_search = view.findViewById(R.id.txt_name_search);
         btn_search = view.findViewById(R.id.btn_search);
         recyclerView = view.findViewById(R.id.recycler_view);
         recyclerView.setHasFixedSize(true);
-
 //        recyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
         recyclerView.setLayoutManager(new GridLayoutManager(getContext(), 2));
 
@@ -76,8 +73,8 @@ public class SearchFragment extends Fragment implements ExploreSearchImageAdapte
         adapter.setOnItemClickListener(this);
 
         fbStorage = FirebaseStorage.getInstance();
-
         dbRef = FirebaseDatabase.getInstance().getReference("images");
+
         btn_search.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {

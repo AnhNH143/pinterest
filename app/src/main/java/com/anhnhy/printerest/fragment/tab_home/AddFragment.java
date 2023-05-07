@@ -17,7 +17,6 @@ import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.anhnhy.printerest.ImagesActivity;
 import com.anhnhy.printerest.model.Image;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
@@ -66,7 +65,6 @@ public class AddFragment extends Fragment {
         super.onViewCreated(view, savedInstanceState);
         buttonChooseImage = view.findViewById(R.id.button_choose_image);
         buttonUpload = view.findViewById(R.id.button_upload);
-        textViewShowUploads = view.findViewById(R.id.text_view_show_uploads);
         editTextFileName = view.findViewById(R.id.edit_text_file_name);
         imageView = view.findViewById(R.id.image_view);
         progressBar = view.findViewById(R.id.progress_bar);
@@ -92,18 +90,6 @@ public class AddFragment extends Fragment {
                 }
             }
         });
-
-        textViewShowUploads.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                openImagesActivity();
-            }
-        });
-    }
-
-    private void openImagesActivity() {
-        Intent intent = new Intent(getActivity(), ImagesActivity.class);
-        startActivity(intent);
     }
 
     private void openFileChooser() {

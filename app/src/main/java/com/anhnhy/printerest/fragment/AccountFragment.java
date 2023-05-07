@@ -28,8 +28,7 @@ import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 
 public class AccountFragment extends Fragment {
-    private TextView u_name;
-    private TextView u_email;
+    private TextView u_name, u_email;
     private Button btn_sign_out, btn_change_password;
     private DatabaseReference dbRef;
     FirebaseAuth fbAuth;
@@ -46,6 +45,7 @@ public class AccountFragment extends Fragment {
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
+
         u_name = view.findViewById(R.id.u_name);
         u_email = view.findViewById(R.id.u_email);
         btn_sign_out = view.findViewById(R.id.btn_sign_out);
@@ -102,7 +102,6 @@ public class AccountFragment extends Fragment {
 
                 AlertDialog dialog = builder.create();
                 dialog.show();
-
             }
         });
     }

@@ -35,9 +35,9 @@ public class ExploreFragment extends Fragment implements ExploreSearchImageAdapt
     private FirebaseStorage fbStorage;
     private DatabaseReference dbRef;
     private DatabaseReference userRef;
-    private String UID = FirebaseAuth.getInstance().getCurrentUser().getUid();
     private ValueEventListener valueEventListener;
     private List<Image> images;
+    private String UID = FirebaseAuth.getInstance().getCurrentUser().getUid();
 
     public ExploreFragment() {
     }

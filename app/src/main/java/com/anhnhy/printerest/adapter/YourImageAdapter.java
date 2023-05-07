@@ -8,7 +8,6 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
-import android.widget.TextView;
 
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -18,13 +17,12 @@ import com.bumptech.glide.Glide;
 
 import java.util.List;
 
-public class ImageAdapter extends RecyclerView.Adapter<ImageAdapter.ImageViewHolder> {
+public class YourImageAdapter extends RecyclerView.Adapter<YourImageAdapter.ImageViewHolder> {
     private Context context;
     private List<Image> images;
-
     private OnItemClickListener itemClickListener;
 
-    public ImageAdapter(Context context, List<Image> images) {
+    public YourImageAdapter(Context context, List<Image> images) {
         this.context = context;
         this.images = images;
     }
@@ -38,9 +36,6 @@ public class ImageAdapter extends RecyclerView.Adapter<ImageAdapter.ImageViewHol
     @Override
     public void onBindViewHolder(ImageViewHolder holder, int position) {
         Image uploadCurrent = images.get(position);
-//        holder.textViewName.setText(uploadCurrent.getName());
-
-        // sử dụng vẽ bằng glide
         Glide.with(context)
                 .load(uploadCurrent.getImageUrl())
                 .fitCenter()
@@ -53,13 +48,10 @@ public class ImageAdapter extends RecyclerView.Adapter<ImageAdapter.ImageViewHol
 
     public class ImageViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener,
             View.OnCreateContextMenuListener, MenuItem.OnMenuItemClickListener {
-//        public TextView textViewName;
         public ImageView imageView;
 
         public ImageViewHolder(View itemView) {
             super(itemView);
-
-//            textViewName = itemView.findViewById(R.id.text_view_name);
             imageView = itemView.findViewById(R.id.image_view_upload);
 
             itemView.setOnClickListener(this);
@@ -78,11 +70,10 @@ public class ImageAdapter extends RecyclerView.Adapter<ImageAdapter.ImageViewHol
 
         @Override
         public void onCreateContextMenu(ContextMenu menu, View v, ContextMenu.ContextMenuInfo menuInfo) {
-            menu.setHeaderTitle("Select Action");
-            MenuItem doWhatever = menu.add(Menu.NONE, 1, 1, "Do whatever");
-            MenuItem delete = menu.add(Menu.NONE, 2, 2, "Delete");
+            MenuItem watchDetail = menu.add(Menu.NONE, 1, 1, "Watch detail");
+            MenuItem delete = menu.add(Menu.NONE, 2, 2, "Delete image");
 
-            doWhatever.setOnMenuItemClickListener(this);
+            watchDetail.setOnMenuItemClickListener(this);
             delete.setOnMenuItemClickListener(this);
         }
 
@@ -91,7 +82,6 @@ public class ImageAdapter extends RecyclerView.Adapter<ImageAdapter.ImageViewHol
             if (itemClickListener != null) {
                 int position = getAdapterPosition();
                 if (position != RecyclerView.NO_POSITION) {
-
                     switch (item.getItemId()) {
                         case 1:
                             itemClickListener.onWhatEverClick(position);

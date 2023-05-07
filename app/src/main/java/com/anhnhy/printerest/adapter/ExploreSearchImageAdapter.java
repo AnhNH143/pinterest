@@ -39,8 +39,7 @@ public class ExploreSearchImageAdapter extends RecyclerView.Adapter<ExploreSearc
         Image exploreImage = exploreImages.get(position);
         holder.txt_e_name.setText(exploreImage.getName());
         int likeCount = exploreImage.getLikeIds() == null ? 0 : exploreImage.getLikeIds().size();
-        holder.txt_e_like_count.setText(likeCount+"");
-        // sử dụng vẽ bằng glide
+        holder.txt_e_like_count.setText(likeCount + "");
         Glide.with(context)
                 .load(exploreImage.getImageUrl())
                 .fitCenter()
@@ -73,7 +72,6 @@ public class ExploreSearchImageAdapter extends RecyclerView.Adapter<ExploreSearc
             if (itemClickListener != null) {
                 int position = getAdapterPosition();
                 if (position != RecyclerView.NO_POSITION) {
-
                     switch (item.getItemId()) {
                         case 1:
                             itemClickListener.onWatchDetailClick(position);
@@ -101,7 +99,6 @@ public class ExploreSearchImageAdapter extends RecyclerView.Adapter<ExploreSearc
 
         @Override
         public void onCreateContextMenu(ContextMenu menu, View v, ContextMenu.ContextMenuInfo menuInfo) {
-            menu.setHeaderTitle("Select Action");
             MenuItem watchDetail = menu.add(Menu.NONE, 1, 1, "Watch detail");
             MenuItem likeImage = menu.add(Menu.NONE, 2, 2, "Like image");
             MenuItem dislikeImage = menu.add(Menu.NONE, 3, 3, "Dislike image");
@@ -114,8 +111,11 @@ public class ExploreSearchImageAdapter extends RecyclerView.Adapter<ExploreSearc
 
     public interface OnItemClickListener {
         void onItemClick(int position);
+
         void onWatchDetailClick(int position);
+
         void onLikeImageClick(int position);
+
         void onDislikeImageClick(int position);
     }
 

@@ -12,9 +12,6 @@ public class Image implements Serializable {
     private String imageUrl;
     private String key;
     private String senderId;
-
-    private int likeCounts;
-
     private HashMap<String, String> likeIds;
 
     public Image() {
@@ -27,7 +24,6 @@ public class Image implements Serializable {
         this.name = name;
         this.imageUrl = imageUrl;
         this.senderId = senderId;
-        this.likeCounts = 0;
         this.likeIds = new HashMap<>();
     }
 

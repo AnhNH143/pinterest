@@ -30,7 +30,6 @@ public class LoginActivity extends AppCompatActivity {
         setContentView(R.layout.activity_login);
 
         initView();
-
         fbAuth = FirebaseAuth.getInstance();
 
         btn_login.setOnClickListener(new View.OnClickListener() {
@@ -38,12 +37,10 @@ public class LoginActivity extends AppCompatActivity {
             public void onClick(View v) {
                 String email = txt_email.getText().toString().trim().toLowerCase();
                 String password = txt_password.getText().toString();
-                // check
                 if (CheckValidate.isNone(email) || CheckValidate.isNone(password)) {
                     Toast.makeText(LoginActivity.this,
                             "Nhập lại email/password", Toast.LENGTH_SHORT).show();
                 } else {
-                    // đăng nhập = email/pw đã đăng ký
                     fbAuth.signInWithEmailAndPassword(
                                     email, password).
                             addOnSuccessListener(new OnSuccessListener<AuthResult>() {

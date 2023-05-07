@@ -25,7 +25,7 @@ public class RegisterActivity extends AppCompatActivity {
     Button btn_register, btn_back;
     protected FirebaseAuth fbAuth;
     private DatabaseReference dbRef;
-    String UID;
+    private String UID = fbAuth.getCurrentUser().getUid();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -33,8 +33,6 @@ public class RegisterActivity extends AppCompatActivity {
         setContentView(R.layout.activity_register);
 
         initView();
-
-        // khởi tạo
         fbAuth = FirebaseAuth.getInstance();
         dbRef = FirebaseDatabase.getInstance().getReference("users");
 
@@ -58,10 +56,8 @@ public class RegisterActivity extends AppCompatActivity {
                                 addOnSuccessListener(new OnSuccessListener<AuthResult>() {
                                     @Override
                                     public void onSuccess(AuthResult authResult) {
-                                        UID = fbAuth.getCurrentUser().getUid();
                                         User userRegister = new User(name, email);
 
-                                        // up lên firebase realtime database
                                         dbRef.child(UID).setValue(userRegister);
 
                                         Toast.makeText(RegisterActivity.this, "Đăng ký thành công", Toast.LENGTH_SHORT).show();

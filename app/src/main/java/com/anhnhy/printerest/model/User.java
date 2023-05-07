@@ -12,18 +12,15 @@ public class User implements Serializable {
     private String name;
     private String email;
     private String key;
-
     private List<String> imageIds;
-
     private List<String> likeIds;
+
     public User() {
     }
 
     public User(String name, String email) {
         this.name = name;
         this.email = email;
-        this.imageIds = new ArrayList<>();
-        this.likeIds = new ArrayList<>();
     }
 
     public String getName() {
