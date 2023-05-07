@@ -119,6 +119,50 @@ public class AlbumFragment extends Fragment implements ImageAdapter.OnItemClickL
                 });
             }
         });
+
+        btn_like_img.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                DatabaseReference likerIdsRef = userRef.child("likeIds");
+                valueEventListener = likerIdsRef.addValueEventListener(new ValueEventListener() {
+                    @Override
+                    public void onDataChange(@NonNull DataSnapshot snapshot) {
+                        imageIds.clear();
+                        for (DataSnapshot dataSnapshot : snapshot.getChildren()) {
+                            String imageId = dataSnapshot.getValue().toString();
+                            imageIds.add(imageId);
+                        }
+                        images.clear();
+                        for (String imageId : imageIds) {
+                            DatabaseReference imageRef = dbRef.child(imageId);
+                            valueEventListener = imageRef.addValueEventListener(new ValueEventListener() {
+                                @Override
+                                public void onDataChange(@NonNull DataSnapshot snapshot) {
+                                    if (snapshot.exists()) {
+                                        String name = snapshot.child("name").getValue().toString();
+                                        String imageUrl = snapshot.child("imageUrl").getValue().toString();
+                                        String senderId = snapshot.child("senderId").getValue().toString();
+                                        Image image = new Image(name, imageUrl, senderId);
+                                        image.setKey(imageId);
+                                        images.add(image);
+                                    }
+                                    adapter.notifyDataSetChanged();
+                                }
+
+                                @Override
+                                public void onCancelled(DatabaseError databaseError) {
+                                    Toast.makeText(getContext(), databaseError.getMessage(), Toast.LENGTH_SHORT).show();
+                                }
+                            });
+                        }
+                    }
+                    @Override
+                    public void onCancelled(@NonNull DatabaseError error) {
+
+                    }
+                });
+            }
+        });
     }
 
 
