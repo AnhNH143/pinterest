@@ -14,26 +14,28 @@ import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.anhnhy.printerest.R;
-import com.anhnhy.printerest.adapter.ImageAdapter;
+import com.anhnhy.printerest.adapter.ExploreSearchImageAdapter;
 import com.anhnhy.printerest.model.Image;
-import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 import com.google.firebase.storage.FirebaseStorage;
-import com.google.firebase.storage.StorageReference;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 
-public class ExploreFragment extends Fragment implements ImageAdapter.OnItemClickListener {
+public class ExploreFragment extends Fragment implements ExploreSearchImageAdapter.OnItemClickListener {
     private RecyclerView recyclerView;
-    private ImageAdapter adapter;
+    private ExploreSearchImageAdapter adapter;
     private ProgressBar progressCircle;
     private FirebaseStorage fbStorage;
     private DatabaseReference dbRef;
+    private DatabaseReference userRef;
+    private String UID = FirebaseAuth.getInstance().getCurrentUser().getUid();
     private ValueEventListener valueEventListener;
     private List<Image> images;
 
@@ -58,7 +60,7 @@ public class ExploreFragment extends Fragment implements ImageAdapter.OnItemClic
         progressCircle = view.findViewById(R.id.progress_circle);
 
         images = new ArrayList<>();
-        adapter = new ImageAdapter(getContext(), images);
+        adapter = new ExploreSearchImageAdapter(getContext(), images);
 
         recyclerView.setAdapter(adapter);
         adapter.setOnItemClickListener(this);
@@ -66,6 +68,8 @@ public class ExploreFragment extends Fragment implements ImageAdapter.OnItemClic
         fbStorage = FirebaseStorage.getInstance();
 
         dbRef = FirebaseDatabase.getInstance().getReference("images");
+        userRef = FirebaseDatabase.getInstance().getReference("users").child(UID);
+
         valueEventListener = dbRef.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
@@ -93,22 +97,45 @@ public class ExploreFragment extends Fragment implements ImageAdapter.OnItemClic
     }
 
     @Override
-    public void onWhatEverClick(int position) {
-        Toast.makeText(getContext(), "Whatever click at position: " + position, Toast.LENGTH_SHORT).show();
+    public void onWatchDetailClick(int position) {
+        Toast.makeText(getContext(), "watch detail" + position, Toast.LENGTH_SHORT).show();
     }
 
     @Override
-    public void onDeleteClick(int position) {
+    public void onLikeImageClick(int position) {
         Image selectedItem = images.get(position);
-        final String selectedKey = selectedItem.getKey();
-
-        StorageReference imageRef = fbStorage.getReferenceFromUrl(selectedItem.getImageUrl());
-        imageRef.delete().addOnSuccessListener(new OnSuccessListener<Void>() {
-            @Override
-            public void onSuccess(Void aVoid) {
-                dbRef.child(selectedKey).removeValue();
-                Toast.makeText(getContext(), "Item deleted", Toast.LENGTH_SHORT).show();
+        String imageKey = selectedItem.getKey();
+        HashMap<String, String> likeIds = selectedItem.getLikeIds();
+        boolean isExist = false;
+        if (likeIds != null && likeIds.size() > 0) {
+            if (likeIds.keySet().contains(UID)) {
+                isExist = true;
+                Toast.makeText(getContext(), "Bạn đã like ảnh rồi", Toast.LENGTH_SHORT).show();
             }
-        });
+        }
+        if (!isExist) {
+            dbRef.child(imageKey).child("likeIds").child(UID).setValue(UID);
+            userRef.child("likeIds").child(imageKey).setValue(imageKey);
+            Toast.makeText(getContext(), "Like ảnh thành công", Toast.LENGTH_SHORT).show();
+        }
+    }
+
+    @Override
+    public void onDislikeImageClick(int position) {
+        Image selectedItem = images.get(position);
+        String imageKey = selectedItem.getKey();
+        HashMap<String, String> likeIds = selectedItem.getLikeIds();
+        boolean isExist = false;
+        if (likeIds != null && likeIds.size() > 0) {
+            if (likeIds.keySet().contains(UID)) {
+                isExist = true;
+                dbRef.child(imageKey).child("likeIds").child(UID).removeValue();
+                userRef.child("likeIds").child(imageKey).removeValue();
+                Toast.makeText(getContext(), "Bỏ like thành công", Toast.LENGTH_SHORT).show();
+            }
+        }
+        if (!isExist) {
+            Toast.makeText(getContext(), "Đã like ảnh đâu", Toast.LENGTH_SHORT).show();
+        }
     }
 }

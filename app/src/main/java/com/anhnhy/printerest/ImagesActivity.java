@@ -13,6 +13,7 @@ import android.widget.Toast;
 import com.anhnhy.printerest.adapter.ImageAdapter;
 import com.anhnhy.printerest.model.Image;
 import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
@@ -33,7 +34,8 @@ public class ImagesActivity extends AppCompatActivity implements ImageAdapter.On
     private DatabaseReference dbRef;
     private ValueEventListener valueEventListener;
     private List<Image> images;
-
+    private DatabaseReference userRef;
+    private String UID = FirebaseAuth.getInstance().getCurrentUser().getUid();
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -52,6 +54,7 @@ public class ImagesActivity extends AppCompatActivity implements ImageAdapter.On
 
         fbStorage = FirebaseStorage.getInstance();
         dbRef = FirebaseDatabase.getInstance().getReference("images");
+        userRef = FirebaseDatabase.getInstance().getReference("users");
         valueEventListener = dbRef.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
@@ -93,6 +96,7 @@ public class ImagesActivity extends AppCompatActivity implements ImageAdapter.On
             @Override
             public void onSuccess(Void aVoid) {
                 dbRef.child(selectedKey).removeValue();
+                userRef.child(UID).child("imageIds").child(selectedKey).removeValue();
                 Toast.makeText(ImagesActivity.this, "Item deleted", Toast.LENGTH_SHORT).show();
             }
         });

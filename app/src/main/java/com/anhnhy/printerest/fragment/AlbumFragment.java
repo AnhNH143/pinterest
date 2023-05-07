@@ -31,7 +31,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class AlbumFragment extends Fragment implements ImageAdapter.OnItemClickListener {
-    Button btn_upload_img;
+    Button btn_upload_img, btn_like_img;
     private RecyclerView recyclerView;
     private ImageAdapter adapter;
     private ProgressBar progressCircle;
@@ -56,6 +56,7 @@ public class AlbumFragment extends Fragment implements ImageAdapter.OnItemClickL
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
         btn_upload_img = view.findViewById(R.id.btn_upload_img);
+        btn_like_img = view.findViewById(R.id.btn_like_img);
         recyclerView = view.findViewById(R.id.recycler_view);
         recyclerView.setHasFixedSize(true);
 
@@ -82,6 +83,7 @@ public class AlbumFragment extends Fragment implements ImageAdapter.OnItemClickL
                 valueEventListener = imageIdsRef.addValueEventListener(new ValueEventListener() {
                     @Override
                     public void onDataChange(@NonNull DataSnapshot snapshot) {
+                        imageIds.clear();
                         for (DataSnapshot dataSnapshot : snapshot.getChildren()) {
                             String imageId = dataSnapshot.getValue().toString();
                             imageIds.add(imageId);
@@ -92,24 +94,23 @@ public class AlbumFragment extends Fragment implements ImageAdapter.OnItemClickL
                             valueEventListener = imageRef.addValueEventListener(new ValueEventListener() {
                                 @Override
                                 public void onDataChange(@NonNull DataSnapshot snapshot) {
-                                    String name = snapshot.child("name").getValue().toString();
-                                    String imageUrl = snapshot.child("imageUrl").getValue().toString();
-                                    String senderId = snapshot.child("senderId").getValue().toString();
-                                    Image image = new Image(name, imageUrl, senderId);
-                                    image.setKey(imageId);
-                                    images.add(image);
+                                    if (snapshot.exists()) {
+                                        String name = snapshot.child("name").getValue().toString();
+                                        String imageUrl = snapshot.child("imageUrl").getValue().toString();
+                                        String senderId = snapshot.child("senderId").getValue().toString();
+                                        Image image = new Image(name, imageUrl, senderId);
+                                        image.setKey(imageId);
+                                        images.add(image);
+                                    }
                                     adapter.notifyDataSetChanged();
-//                            progressCircle.setVisibility(View.INVISIBLE);
                                 }
 
                                 @Override
                                 public void onCancelled(DatabaseError databaseError) {
                                     Toast.makeText(getContext(), databaseError.getMessage(), Toast.LENGTH_SHORT).show();
-//                            progressCircle.setVisibility(View.INVISIBLE);
                                 }
                             });
                         }
-                        imageIds.clear();
                     }
                     @Override
                     public void onCancelled(@NonNull DatabaseError error) {
@@ -135,13 +136,18 @@ public class AlbumFragment extends Fragment implements ImageAdapter.OnItemClickL
     public void onDeleteClick(int position) {
         Image selectedItem = images.get(position);
         final String selectedKey = selectedItem.getKey();
-
+        images.remove(position);
+        imageIds.remove(selectedKey);
+        images.clear();
+        imageIds.clear();
         StorageReference imageRef = fbStorage.getReferenceFromUrl(selectedItem.getImageUrl());
         imageRef.delete().addOnSuccessListener(new OnSuccessListener<Void>() {
             @Override
             public void onSuccess(Void aVoid) {
                 dbRef.child(selectedKey).removeValue();
+                userRef.child("imageIds").child(selectedKey).removeValue();
                 Toast.makeText(getContext(), "Item deleted", Toast.LENGTH_SHORT).show();
+                adapter.notifyDataSetChanged();
             }
         });
     }

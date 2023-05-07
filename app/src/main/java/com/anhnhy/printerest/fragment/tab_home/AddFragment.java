@@ -160,7 +160,7 @@ public class AddFragment extends Fragment {
                                     dbRef.child(imageId).setValue(image);
 
                                     // update user
-                                    userRef.child("imageIds").push().setValue(imageId);
+                                    userRef.child("imageIds").child(imageId).setValue(imageId);
                                 }
                             });
                         }

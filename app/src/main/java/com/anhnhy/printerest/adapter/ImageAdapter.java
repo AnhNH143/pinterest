@@ -15,7 +15,6 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.anhnhy.printerest.R;
 import com.anhnhy.printerest.model.Image;
 import com.bumptech.glide.Glide;
-import com.squareup.picasso.Picasso;
 
 import java.util.List;
 
@@ -39,7 +38,7 @@ public class ImageAdapter extends RecyclerView.Adapter<ImageAdapter.ImageViewHol
     @Override
     public void onBindViewHolder(ImageViewHolder holder, int position) {
         Image uploadCurrent = images.get(position);
-        holder.textViewName.setText(uploadCurrent.getName());
+//        holder.textViewName.setText(uploadCurrent.getName());
 
         // sử dụng vẽ bằng glide
         Glide.with(context)
@@ -54,13 +53,13 @@ public class ImageAdapter extends RecyclerView.Adapter<ImageAdapter.ImageViewHol
 
     public class ImageViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener,
             View.OnCreateContextMenuListener, MenuItem.OnMenuItemClickListener {
-        public TextView textViewName;
+//        public TextView textViewName;
         public ImageView imageView;
 
         public ImageViewHolder(View itemView) {
             super(itemView);
 
-            textViewName = itemView.findViewById(R.id.text_view_name);
+//            textViewName = itemView.findViewById(R.id.text_view_name);
             imageView = itemView.findViewById(R.id.image_view_upload);
 
             itemView.setOnClickListener(this);
