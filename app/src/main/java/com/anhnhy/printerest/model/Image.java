@@ -13,18 +13,20 @@ public class Image implements Serializable {
     private String key;
     private String senderId;
     private HashMap<String, String> likeIds;
+    private String tag;
 
     public Image() {
     }
 
-    public Image(String name, String imageUrl, String senderId) {
+    public Image(String name, String imageUrl, String senderId, String tag) {
         if (name.trim().equals("")) {
-            name = "no name";
+            name = "";
         }
         this.name = name;
         this.imageUrl = imageUrl;
         this.senderId = senderId;
         this.likeIds = new HashMap<>();
+        this.tag = tag;
     }
 
     public String getName() {
@@ -57,6 +59,14 @@ public class Image implements Serializable {
 
     public void setLikeIds(HashMap<String, String> likeIds) {
         this.likeIds = likeIds;
+    }
+
+    public void setTag(String tag) {
+        this.tag = tag;
+    }
+
+    public String getTag() {
+        return tag;
     }
 
     @Exclude

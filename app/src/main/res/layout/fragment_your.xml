@@ -9,7 +9,7 @@
         android:layout_height="wrap_content"
         android:layout_marginTop="60dp"
         android:gravity="center"
-        android:text="Album của bản" />
+        android:text="Album ảnh đăng tải" />
 
 
     <androidx.recyclerview.widget.RecyclerView

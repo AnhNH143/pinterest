@@ -1,10 +1,13 @@
 package com.anhnhy.printerest.fragment;
 
+import android.app.DownloadManager;
+import android.content.Context;
+import android.net.Uri;
 import android.os.Bundle;
+import android.os.Environment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Button;
 import android.widget.ProgressBar;
 import android.widget.Toast;
 
@@ -90,7 +93,8 @@ public class LikeFragment extends Fragment implements LikeImageAdapter.OnItemCli
                                 String name = snapshot.child("name").getValue().toString();
                                 String imageUrl = snapshot.child("imageUrl").getValue().toString();
                                 String senderId = snapshot.child("senderId").getValue().toString();
-                                Image image = new Image(name, imageUrl, senderId);
+                                String tag = snapshot.child("tag").getValue().toString();
+                                Image image = new Image(name, imageUrl, senderId, tag);
                                 image.setKey(imageId);
                                 images.add(image);
                             }
@@ -134,5 +138,21 @@ public class LikeFragment extends Fragment implements LikeImageAdapter.OnItemCli
         userRef.child("likeIds").child(selectedKey).removeValue();
         Toast.makeText(getContext(), "Item deleted", Toast.LENGTH_SHORT).show();
         adapter.notifyDataSetChanged();
+    }
+
+    @Override
+    public void onDownload(String url) {
+        DownloadManager.Request request = new DownloadManager.Request(Uri.parse(url));
+        request.setAllowedNetworkTypes(DownloadManager.Request.NETWORK_MOBILE | DownloadManager.Request.NETWORK_WIFI);
+        request.setTitle("Download");
+        request.setDescription("Downloading...");
+
+        request.setNotificationVisibility(DownloadManager.Request.VISIBILITY_VISIBLE_NOTIFY_COMPLETED);
+
+        request.setDestinationInExternalPublicDir(Environment.DIRECTORY_DOWNLOADS, String.valueOf(System.currentTimeMillis()));
+        DownloadManager downloadManager = (DownloadManager) getActivity().getSystemService(Context.DOWNLOAD_SERVICE);
+        if (downloadManager != null) {
+            downloadManager.enqueue(request);
+        }
     }
 }

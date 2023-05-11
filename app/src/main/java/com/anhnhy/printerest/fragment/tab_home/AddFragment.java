@@ -10,10 +10,12 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.webkit.MimeTypeMap;
+import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.ProgressBar;
+import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -40,10 +42,10 @@ public class AddFragment extends Fragment {
     private static final int PICK_IMAGE_REQUEST = 1;
     private Button buttonChooseImage;
     private Button buttonUpload;
-    private TextView textViewShowUploads;
     private EditText editTextFileName;
     private ImageView imageView;
     private ProgressBar progressBar;
+    private Spinner tagSpinner;
     private Uri imageUri;
     private StorageReference storageRef;
     private DatabaseReference dbRef;
@@ -68,7 +70,9 @@ public class AddFragment extends Fragment {
         editTextFileName = view.findViewById(R.id.edit_text_file_name);
         imageView = view.findViewById(R.id.image_view);
         progressBar = view.findViewById(R.id.progress_bar);
-
+        tagSpinner = view.findViewById(R.id.tag);
+        tagSpinner.setAdapter(new ArrayAdapter<String>(getActivity(), R.layout.item_spinner,
+                getResources().getStringArray(R.array.tag)));
         storageRef = FirebaseStorage.getInstance().getReference("images");
         dbRef = FirebaseDatabase.getInstance().getReference("images");
         userRef = FirebaseDatabase.getInstance().getReference().child("users").child(UID);
@@ -140,7 +144,7 @@ public class AddFragment extends Fragment {
                                 @Override
                                 public void onSuccess(Uri uri) {
                                     Image image = new Image(editTextFileName.getText().toString().trim(),
-                                            uri.toString(), UID);
+                                            uri.toString(), UID, tagSpinner.getSelectedItem().toString());
                                     String imageId = dbRef.push().getKey();
                                     // up lên realtime firebase
                                     dbRef.child(imageId).setValue(image);

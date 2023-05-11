@@ -1,12 +1,18 @@
 package com.anhnhy.printerest.fragment.tab_home;
 
+import android.app.DownloadManager;
+import android.content.Context;
+import android.net.Uri;
 import android.os.Bundle;
+import android.os.Environment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ProgressBar;
+import android.widget.Spinner;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
@@ -34,9 +40,10 @@ public class SearchFragment extends Fragment implements ExploreSearchImageAdapte
     EditText txt_name_search;
     Button btn_search;
     String name_search;
+    String tag;
+    Spinner tagSpinner;
     private RecyclerView recyclerView;
     private ExploreSearchImageAdapter adapter;
-    private ProgressBar progressCircle;
     private FirebaseStorage fbStorage;
     private DatabaseReference dbRef;
     private DatabaseReference userRef;
@@ -61,10 +68,11 @@ public class SearchFragment extends Fragment implements ExploreSearchImageAdapte
         btn_search = view.findViewById(R.id.btn_search);
         recyclerView = view.findViewById(R.id.recycler_view);
         recyclerView.setHasFixedSize(true);
+        tagSpinner = view.findViewById(R.id.tag);
+        tagSpinner.setAdapter(new ArrayAdapter<String>(getActivity(), R.layout.item_spinner,
+                getResources().getStringArray(R.array.tag)));
 //        recyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
         recyclerView.setLayoutManager(new GridLayoutManager(getContext(), 2));
-
-        progressCircle = view.findViewById(R.id.progress_circle);
 
         images = new ArrayList<>();
         adapter = new ExploreSearchImageAdapter(getContext(), images);
@@ -79,6 +87,7 @@ public class SearchFragment extends Fragment implements ExploreSearchImageAdapte
             @Override
             public void onClick(View v) {
                 name_search = txt_name_search.getText().toString();
+                tag = tagSpinner.getSelectedItem().toString();
                 valueEventListener = dbRef.addValueEventListener(new ValueEventListener() {
                     @Override
                     public void onDataChange(DataSnapshot dataSnapshot) {
@@ -89,15 +98,21 @@ public class SearchFragment extends Fragment implements ExploreSearchImageAdapte
                             if (image.getName().toLowerCase().contains(name_search.toLowerCase())) {
                                 images.add(image);
                             }
+                            for (Image image1 : images) {
+                                if (tag.equalsIgnoreCase("None")) {
+                                    break;
+                                }
+                                if (!image1.getTag().equalsIgnoreCase(tag)) {
+                                    images.remove(image1);
+                                }
+                            }
                         }
                         adapter.notifyDataSetChanged();
-                        progressCircle.setVisibility(View.INVISIBLE);
                     }
 
                     @Override
                     public void onCancelled(DatabaseError databaseError) {
                         Toast.makeText(getContext(), databaseError.getMessage(), Toast.LENGTH_SHORT).show();
-                        progressCircle.setVisibility(View.INVISIBLE);
                     }
                 });
             }
@@ -152,6 +167,22 @@ public class SearchFragment extends Fragment implements ExploreSearchImageAdapte
         }
         if (!isExist) {
             Toast.makeText(getContext(), "Đã like ảnh đâu", Toast.LENGTH_SHORT).show();
+        }
+    }
+
+    @Override
+    public void onDownload(String url) {
+        DownloadManager.Request request = new DownloadManager.Request(Uri.parse(url));
+        request.setAllowedNetworkTypes(DownloadManager.Request.NETWORK_MOBILE | DownloadManager.Request.NETWORK_WIFI);
+        request.setTitle("Download");
+        request.setDescription("Downloading...");
+
+        request.setNotificationVisibility(DownloadManager.Request.VISIBILITY_VISIBLE_NOTIFY_COMPLETED);
+
+        request.setDestinationInExternalPublicDir(Environment.DIRECTORY_DOWNLOADS, String.valueOf(System.currentTimeMillis()));
+        DownloadManager downloadManager = (DownloadManager) getActivity().getSystemService(Context.DOWNLOAD_SERVICE);
+        if (downloadManager != null) {
+            downloadManager.enqueue(request);
         }
     }
 }

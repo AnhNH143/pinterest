@@ -81,6 +81,9 @@ public class ExploreSearchImageAdapter extends RecyclerView.Adapter<ExploreSearc
                             return true;
                         case 3:
                             itemClickListener.onDislikeImageClick(position);
+                        case 4:
+                            itemClickListener.onDownload(exploreImages.get(position).getImageUrl());
+                            return true;
                     }
                 }
             }
@@ -102,10 +105,12 @@ public class ExploreSearchImageAdapter extends RecyclerView.Adapter<ExploreSearc
             MenuItem watchDetail = menu.add(Menu.NONE, 1, 1, "Watch detail");
             MenuItem likeImage = menu.add(Menu.NONE, 2, 2, "Like image");
             MenuItem dislikeImage = menu.add(Menu.NONE, 3, 3, "Dislike image");
+            MenuItem download = menu.add(Menu.NONE, 4, 4, "Download");
 
             watchDetail.setOnMenuItemClickListener(this);
             likeImage.setOnMenuItemClickListener(this);
             dislikeImage.setOnMenuItemClickListener(this);
+            download.setOnMenuItemClickListener(this);
         }
     }
 
@@ -117,6 +122,8 @@ public class ExploreSearchImageAdapter extends RecyclerView.Adapter<ExploreSearc
         void onLikeImageClick(int position);
 
         void onDislikeImageClick(int position);
+
+        void onDownload(String url);
     }
 
     public void setOnItemClickListener(OnItemClickListener listener) {

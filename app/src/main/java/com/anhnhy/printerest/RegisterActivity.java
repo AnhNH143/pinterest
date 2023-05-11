@@ -25,7 +25,7 @@ public class RegisterActivity extends AppCompatActivity {
     Button btn_register, btn_back;
     protected FirebaseAuth fbAuth;
     private DatabaseReference dbRef;
-    private String UID = fbAuth.getCurrentUser().getUid();
+    private String UID;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -57,7 +57,7 @@ public class RegisterActivity extends AppCompatActivity {
                                     @Override
                                     public void onSuccess(AuthResult authResult) {
                                         User userRegister = new User(name, email);
-
+                                        UID = fbAuth.getCurrentUser().getUid();
                                         dbRef.child(UID).setValue(userRegister);
 
                                         Toast.makeText(RegisterActivity.this, "Đăng ký thành công", Toast.LENGTH_SHORT).show();

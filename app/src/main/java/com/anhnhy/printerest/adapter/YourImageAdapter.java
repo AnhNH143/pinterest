@@ -72,9 +72,11 @@ public class YourImageAdapter extends RecyclerView.Adapter<YourImageAdapter.Imag
         public void onCreateContextMenu(ContextMenu menu, View v, ContextMenu.ContextMenuInfo menuInfo) {
             MenuItem watchDetail = menu.add(Menu.NONE, 1, 1, "Watch detail");
             MenuItem delete = menu.add(Menu.NONE, 2, 2, "Delete image");
+            MenuItem download = menu.add(Menu.NONE, 3, 3, "Download");
 
             watchDetail.setOnMenuItemClickListener(this);
             delete.setOnMenuItemClickListener(this);
+            download.setOnMenuItemClickListener(this);
         }
 
         @Override
@@ -89,6 +91,8 @@ public class YourImageAdapter extends RecyclerView.Adapter<YourImageAdapter.Imag
                         case 2:
                             itemClickListener.onDeleteClick(position);
                             return true;
+                        case 3:
+                            itemClickListener.onDownload(images.get(position).getImageUrl());
                     }
                 }
             }
@@ -102,6 +106,8 @@ public class YourImageAdapter extends RecyclerView.Adapter<YourImageAdapter.Imag
         void onWhatEverClick(int position);
 
         void onDeleteClick(int position);
+
+        void onDownload(String url);
     }
 
     public void setOnItemClickListener(OnItemClickListener listener) {

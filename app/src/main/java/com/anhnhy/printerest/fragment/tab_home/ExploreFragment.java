@@ -1,6 +1,10 @@
 package com.anhnhy.printerest.fragment.tab_home;
 
+import android.app.DownloadManager;
+import android.content.Context;
+import android.net.Uri;
 import android.os.Bundle;
+import android.os.Environment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -136,6 +140,22 @@ public class ExploreFragment extends Fragment implements ExploreSearchImageAdapt
         }
         if (!isExist) {
             Toast.makeText(getContext(), "Đã like ảnh đâu", Toast.LENGTH_SHORT).show();
+        }
+    }
+
+    @Override
+    public void onDownload(String url) {
+        DownloadManager.Request request = new DownloadManager.Request(Uri.parse(url));
+        request.setAllowedNetworkTypes(DownloadManager.Request.NETWORK_MOBILE | DownloadManager.Request.NETWORK_WIFI);
+        request.setTitle("Download");
+        request.setDescription("Downloading...");
+
+        request.setNotificationVisibility(DownloadManager.Request.VISIBILITY_VISIBLE_NOTIFY_COMPLETED);
+
+        request.setDestinationInExternalPublicDir(Environment.DIRECTORY_DOWNLOADS, String.valueOf(System.currentTimeMillis()));
+        DownloadManager downloadManager = (DownloadManager) getActivity().getSystemService(Context.DOWNLOAD_SERVICE);
+        if (downloadManager != null) {
+            downloadManager.enqueue(request);
         }
     }
 }

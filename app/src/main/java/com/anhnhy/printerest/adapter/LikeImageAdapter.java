@@ -73,9 +73,10 @@ public class LikeImageAdapter extends RecyclerView.Adapter<LikeImageAdapter.Imag
         public void onCreateContextMenu(ContextMenu menu, View v, ContextMenu.ContextMenuInfo menuInfo) {
             MenuItem whatDetail = menu.add(Menu.NONE, 1, 1, "Watch detail");
             MenuItem dislike = menu.add(Menu.NONE, 2, 2, "Dislike");
-
+            MenuItem download = menu.add(Menu.NONE, 3, 3, "Download");
             whatDetail.setOnMenuItemClickListener(this);
             dislike.setOnMenuItemClickListener(this);
+            download.setOnMenuItemClickListener(this);
         }
 
         @Override
@@ -90,6 +91,9 @@ public class LikeImageAdapter extends RecyclerView.Adapter<LikeImageAdapter.Imag
                         case 2:
                             itemClickListener.onDislikeClick(position);
                             return true;
+                        case 3:
+                            itemClickListener.onDownload(images.get(position).getImageUrl());
+                            return true;
                     }
                 }
             }
@@ -103,6 +107,8 @@ public class LikeImageAdapter extends RecyclerView.Adapter<LikeImageAdapter.Imag
         void onWhatEverClick(int position);
 
         void onDislikeClick(int position);
+
+        void onDownload(String url);
     }
 
     public void setOnItemClickListener(OnItemClickListener listener) {

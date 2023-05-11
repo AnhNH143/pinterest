@@ -21,4 +21,11 @@
     <string name="tab_search">Search</string>
     <string name="tab_add">Add</string>
 
+    <string-array name="tag">
+        <item>None</item>
+        <item>Giải trí</item>
+        <item>Khoa học</item>
+        <item>Xã hội</item>
+        <item>Con người</item>
+    </string-array>
 </resources>
