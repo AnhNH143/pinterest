@@ -81,6 +81,7 @@ public class ExploreSearchImageAdapter extends RecyclerView.Adapter<ExploreSearc
                             return true;
                         case 3:
                             itemClickListener.onDislikeImageClick(position);
+                            return true;
                         case 4:
                             itemClickListener.onDownload(exploreImages.get(position).getImageUrl());
                             return true;
